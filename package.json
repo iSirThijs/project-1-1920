@@ -1,0 +1,30 @@
+{
+  "name": "project-1-1920",
+  "version": "1.0.0",
+  "description": "## Zoek in de de collectie van de OBA",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c --watch --environment BUILD:dev",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iSirThijs/project-1-1920.git"
+  },
+  "author": "Thijs Spijker",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/iSirThijs/project-1-1920/issues"
+  },
+  "homepage": "https://github.com/iSirThijs/project-1-1920#readme",
+  "devDependencies": {
+    "@rollup/plugin-alias": "^3.0.1",
+    "eslint": "^6.8.0",
+    "rollup": "^1.31.0",
+    "rollup-plugin-serve": "^1.0.1"
+  }
+}
