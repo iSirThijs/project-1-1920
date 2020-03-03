@@ -17,7 +17,8 @@ export default {
 				utils: 'src/utilities',
 				modules: 'src/modules',
 				components: 'src/components',
-				pages: 'src/pages'
+				pages: 'src/pages',
+				templates: 'src/templates'
 			}
 		}),
 		...process.env.BUILD === 'dev' ? [serve('docs')] : []
