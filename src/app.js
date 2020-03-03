@@ -1,14 +1,19 @@
 import 'modules/routie.js';
 import recommendations from 'pages/recommendations.mjs';
 import profile from 'pages/profile.mjs';
+import { setEmptyUser } from 'modules/user.mjs';
 
 routie({
+	'': init,
 	'profile': profilePage,
 	'recommendations': recommendationsPage
 });
 
-routie('profile');
 
+function init(){
+	setEmptyUser();
+	routie('profile');
+}
 
 function recommendationsPage() {
 	removeOldPage();

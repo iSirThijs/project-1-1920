@@ -222,6 +222,10 @@
     module.exports = Routie(window,true);
   }
 
+  function storeData(name, item) {
+  	localStorage.setItem(name, JSON.stringify(item));
+  }
+
   /**
    * saves an value into local storage
    * @export
@@ -230,6 +234,16 @@
    */
   function getStoredData(item) {
   	return JSON.parse(localStorage.getItem(item));
+  }
+
+  /**
+   * check if there is data in local storage
+   * @export
+   * @param {String} - the item to check
+   * @returns {boolean}
+   */
+  function checkLocalStorage(item) {
+  	return getStoredData() ? true : false
   }
 
   function makeApiUrl(user) {
@@ -314,13 +328,33 @@
   	return main;
   };
 
+  function setEmptyUser(){
+  	const emptyUser = {
+  		userID: 83913,
+  		age: null,
+  		city: null,
+  		postalCode: null,
+  		gender: null,
+  		genres: [],
+  		obaLocation: [],
+  		mediaType: [],
+  		loanCategory: []
+  	};
+
+  	if(!checkLocalStorage()) storeData('user', emptyUser);
+  }
+
   routie({
+  	'': init,
   	'profile': profilePage,
   	'recommendations': recommendationsPage
   });
 
-  routie('profile');
 
+  function init(){
+  	setEmptyUser();
+  	routie('profile');
+  }
 
   function recommendationsPage() {
   	removeOldPage();
