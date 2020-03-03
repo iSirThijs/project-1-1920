@@ -2,7 +2,7 @@ import alias from '@rollup/plugin-alias'
 import serve from 'rollup-plugin-serve'
 
 export default {
-	input: 'src/router.mjs',
+	input: 'src/app.js',
 	output: {
 		file: 'docs/scripts/main.js',
 		format: 'umd',
@@ -20,6 +20,6 @@ export default {
 				pages: 'src/pages'
 			}
 		}),
-		... process.env.BUILD === 'dev' ? [ serve('docs') ] : []
+		...process.env.BUILD === 'dev' ? [serve('docs')] : []
 	]
 }
