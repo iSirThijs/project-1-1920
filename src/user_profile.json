@@ -2,7 +2,7 @@
 	"userID": 83913,
 	"age": 43,
 	"city": "Amsterdam",
-	"postalcode": "1022",
+	"postalCode": "1022",
 	"gender": "female",
 	"genres": [["psychologische roman", 1], ["thriller", 3], ["biografie", 4], ["stripverhaal", 2], ["detectiveroman", 4]],
 	"obaLocation": [["CEN", 10], ["BVD", 4]],
