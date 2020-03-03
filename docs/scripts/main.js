@@ -1,10 +1,7 @@
-(function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('page/profile.mjs')) :
-  typeof define === 'function' && define.amd ? define(['page/profile.mjs'], factory) :
-  (global = global || self, factory(global.profile));
-}(this, (function (profile) { 'use strict';
-
-  profile = profile && profile.hasOwnProperty('default') ? profile['default'] : profile;
+(function (factory) {
+  typeof define === 'function' && define.amd ? define(factory) :
+  factory();
+}((function () { 'use strict';
 
   /*!
    * routie - a tiny hash router
@@ -227,8 +224,21 @@
 
   var recommendations = () => {
   	const main = document.createElement('main');
+  	main.setAttribute('id', 'recommendations');
+  	console.log('Recommendations page');
 
 
+
+
+
+
+  	return main;
+  };
+
+  var profile = () => {
+  	const main = document.createElement('main');
+  	main.setAttribute('id', 'profile');
+  	console.log('Profile Page');
 
 
 
@@ -243,6 +253,10 @@
   	'profile': () => profilePage,
   	'recommendations': recommendationsPage
   });
+
+  routie('profile');
+
+  profilePage();
 
 
   function recommendationsPage() {
