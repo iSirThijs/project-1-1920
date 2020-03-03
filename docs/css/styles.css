@@ -88,12 +88,6 @@ header nav ul li a:hover {
     opacity: 1;
 }
 
-/* 
-#recommendations:not(:target)+body header nav ul li:first-of-type:not(:hover) a {
-    opacity: 0.5;
-} */
-
-
 
 /* Content */
 
