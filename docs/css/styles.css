@@ -10,7 +10,8 @@
 
 :root {
     --primary-color: red;
-    --background-color: #F9F9F9;
+    --primary-background-color: #F9F9F9;
+    --secondary-background-color: white;
     --background-highlight-color: #E6E6E6;
     --text-color: black;
 }
@@ -23,10 +24,57 @@ body {
     font-family: "avenirRoman", Arial, Helvetica, sans-serif;
     box-sizing: border-box;
     margin: 0;
+    background-color: var(--primary-background-color);
+}
+
+main {
+    max-width: 1200px;
+    width: 100vw;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 h4 {
     font-family: "avenirBlack", Arial, Helvetica, sans-serif;
     font-size: 35px;
     margin: 0;
+    color: var(--primary-color);
+}
+
+p {
+    margin: 0;
+    color: var(--text-color);
+}
+
+
+/* Card */
+
+article {
+    background-color: var(--secondary-background-color);
+    max-width: 350px;
+    min-width: 300px;
+    padding: 20px;
+    margin: 15px;
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.102);
+    border-bottom: 4px solid var(--secondary-background-color);
+    cursor: pointer;
+}
+
+article:hover {
+    border-bottom: 4px solid var(--primary-color);
+}
+
+article>h4 {
+    margin-bottom: 5px;
+    line-height: 1;
+}
+
+article>p:first-of-type {
+    margin-bottom: 5px;
+}
+
+article>p:last-of-type {
+    font-weight: bolder;
 }
