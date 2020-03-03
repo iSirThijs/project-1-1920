@@ -1,10 +1,5 @@
-(function (factory) {
-	typeof define === 'function' && define.amd ? define(factory) :
-	factory();
-}((function () { 'use strict';
-
-	var profilepage = user => {
-		return `
+export default user => {
+	return `
 	<section id="user" class="profile-section">
       <h2>Persoonsgegevens</h2>
       <form>
@@ -34,12 +29,4 @@
 	</form>
   </section>
   `;
-	};
-
-	let mains = document.getElementsByTagName('main');
-	let main = mains[0];
-
-	main.insertAdjacentHTML('beforeend', profilepage());
-
-})));
-//# sourceMappingURL=main.js.map
+}
