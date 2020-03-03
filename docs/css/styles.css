@@ -8,6 +8,13 @@
     src: url(../assests/fonts/AvenirLTStd-Roman.woff);
 }
 
+:root {
+    --primary-color: red;
+    --background-color: #F9F9F9;
+    --background-highlight-color: #E6E6E6;
+    --text-color: black;
+}
+
 * {
     box-sizing: inherit;
 }
@@ -15,9 +22,11 @@
 body {
     font-family: "avenirRoman", Arial, Helvetica, sans-serif;
     box-sizing: border-box;
-    margin: 0px;
+    margin: 0;
 }
 
 h4 {
     font-family: "avenirBlack", Arial, Helvetica, sans-serif;
+    font-size: 35px;
+    margin: 0;
 }
