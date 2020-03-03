@@ -71,12 +71,20 @@ header nav ul li:last-of-type {
 header nav ul li a {
     text-decoration: none;
     color: var(--text-color);
-    opacity: 0.5;
 }
 
+header nav ul li:hover a,
 header nav ul li a:hover {
     color: var(--primary-color);
     opacity: 1;
+}
+
+#recommendations:target+body header nav ul li:last-of-type:not(:hover) a {
+    opacity: 0.5;
+}
+
+#recommendations:not(:target)+body header nav ul li:first-of-type:not(:hover) a {
+    opacity: 0.5;
 }
 
 
