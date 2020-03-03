@@ -1,0 +1,23 @@
+@font-face {
+    font-family: avenirBlack;
+    src: url(../assests/fonts/AvenirLTStd-Black.woff);
+}
+
+@font-face {
+    font-family: avenirRoman;
+    src: url(../assests/fonts/AvenirLTStd-Roman.woff);
+}
+
+* {
+    box-sizing: inherit;
+}
+
+body {
+    font-family: "avenirRoman", Arial, Helvetica, sans-serif;
+    box-sizing: border-box;
+    margin: 0px;
+}
+
+h4 {
+    font-family: "avenirBlack", Arial, Helvetica, sans-serif;
+}
