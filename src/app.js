@@ -1,6 +1,26 @@
-import profilepage from 'templates/profilepage.mjs';
+import 'modules/routie.js';
+import recommendations from 'pages/recommendations.mjs';
+import profile from 'page/profile.mjs';
 
-let mains = document.getElementsByTagName('main');
-let main = mains[0];
+routie({
+	'profile': () => profilePage,
+	'recommendations': recommendationsPage
+});
 
-main.insertAdjacentHTML('beforeend', profilepage());
+
+function recommendationsPage() {
+	removeOldPage();
+	const body = document.body;
+	body.appendChild(recommendations());
+}
+
+function profilePage() {
+	removeOldPage();
+	const body = document.body;
+	body.appendChild(profile());
+}
+
+function removeOldPage(){
+	const main = document.querySelector('main');
+	main.remove();
+}
