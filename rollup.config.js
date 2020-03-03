@@ -14,7 +14,6 @@ export default {
 	plugins: [
 		alias({
 			entries: {
-				utils: 'src/utilities',
 				modules: 'src/modules',
 				components: 'src/components',
 				pages: 'src/pages',
