@@ -3,13 +3,11 @@ import recommendations from 'pages/recommendations.mjs';
 import profile from 'pages/profile.mjs';
 
 routie({
-	'profile': () => profilePage,
+	'profile': profilePage,
 	'recommendations': recommendationsPage
 });
 
 routie('profile');
-
-profilePage();
 
 
 function recommendationsPage() {

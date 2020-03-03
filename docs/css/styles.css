@@ -53,10 +53,10 @@ header nav {
 header nav ul {
     margin: 0;
     padding: 0;
+    list-style: none;
 }
 
 header nav ul li {
-    list-style: none;
     font-family: "avenirBlack";
     font-size: 25px;
     display: inline-block;
@@ -71,6 +71,7 @@ header nav ul li:last-of-type {
 header nav ul li a {
     text-decoration: none;
     color: var(--text-color);
+    opacity: 0.5;
 }
 
 header nav ul li:hover a,
@@ -79,13 +80,18 @@ header nav ul li a:hover {
     opacity: 1;
 }
 
-#recommendations:target+body header nav ul li:last-of-type:not(:hover) a {
-    opacity: 0.5;
+#recommendations:target {
+    opacity: 1;
 }
 
+#profile:target {
+    opacity: 1;
+}
+
+/* 
 #recommendations:not(:target)+body header nav ul li:first-of-type:not(:hover) a {
     opacity: 0.5;
-}
+} */
 
 
 

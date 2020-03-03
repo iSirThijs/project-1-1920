@@ -224,7 +224,7 @@
 
   var recommendations = () => {
   	const main = document.createElement('main');
-  	main.setAttribute('id', 'recommendations');
+  	// main.setAttribute('id', 'recommendations');
   	console.log('Recommendations page');
 
 
@@ -237,7 +237,7 @@
 
   var profile = () => {
   	const main = document.createElement('main');
-  	main.setAttribute('id', 'profile');
+  	// main.setAttribute('id', 'profile');
   	console.log('Profile Page');
 
 
@@ -250,13 +250,11 @@
   };
 
   routie({
-  	'profile': () => profilePage,
+  	'profile': profilePage,
   	'recommendations': recommendationsPage
   });
 
   routie('profile');
-
-  profilePage();
 
 
   function recommendationsPage() {
