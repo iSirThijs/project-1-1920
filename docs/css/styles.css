@@ -27,6 +27,62 @@ body {
     background-color: var(--primary-background-color);
 }
 
+
+
+/* Navigation */
+
+header {
+    background-color: var(--secondary-background-color);
+    height: 10vh;
+    border-bottom: 6px solid var(--background-highlight-color);
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+header img {
+    margin-left: 30px;
+}
+
+header nav {
+    height: fit-content;
+    margin: auto 0;
+}
+
+header nav ul {
+    margin: 0;
+    padding: 0;
+}
+
+header nav ul li {
+    list-style: none;
+    font-family: "avenirBlack";
+    font-size: 25px;
+    display: inline-block;
+    margin: 0 15px;
+    padding-top: 5px;
+}
+
+header nav ul li:last-of-type {
+    margin-right: 70px;
+}
+
+header nav ul li a {
+    text-decoration: none;
+    color: var(--text-color);
+    opacity: 0.5;
+}
+
+header nav ul li a:hover {
+    color: var(--primary-color);
+    opacity: 1;
+}
+
+
+
+/* Content */
+
 main {
     max-width: 1200px;
     width: 100vw;
@@ -49,6 +105,8 @@ p {
 }
 
 
+
+
 /* Card */
 
 article {
@@ -66,15 +124,15 @@ article:hover {
     border-bottom: 4px solid var(--primary-color);
 }
 
-article>h4 {
+article h4 {
     margin-bottom: 5px;
     line-height: 1;
 }
 
-article>p:first-of-type {
+article p:first-of-type {
     margin-bottom: 5px;
 }
 
-article>p:last-of-type {
+article p:last-of-type {
     font-weight: bolder;
 }
