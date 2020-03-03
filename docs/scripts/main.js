@@ -222,10 +222,90 @@
     module.exports = Routie(window,true);
   }
 
+  function storeData(name, item) {
+  	localStorage.setItem(name, JSON.stringify(item));
+  }
+
+  /**
+   * saves an value into local storage
+   * @export
+   * @param {*} item - the value to save into localstorage
+   * @returns
+   */
+  function getStoredData(item) {
+  	return JSON.parse(localStorage.getItem(item));
+  }
+
+  /**
+   * check if there is data in local storage
+   * @export
+   * @param {String} - the item to check
+   * @returns {boolean}
+   */
+  function checkLocalStorage(item) {
+  	return getStoredData() ? true : false
+  }
+
+  function makeApiUrl(user) {
+  	const cors = 'https://cors-anywhere.herokuapp.com/';
+  	const endpoint = 'https://zoeken.oba.nl/api/v1/search/?q=';
+  	const query = 'tolkien';
+  	const key = "ffbc1ededa6f23371bc40df1864843be";
+  	const url = `${cors}${endpoint}${query}&authorization=${key}&detaillevel=Default&output=json`;
+  	return url;
+  }
+
+  /* 
+   * Module to append fetch with some additional modules
+   * based on https://codeburst.io/fetch-api-was-bringing-darkness-to-my-codebase-so-i-did-something-to-illuminate-it-7f2d8826e939
+   */
+
+  /**
+   * Checks if the response is 'ok'
+   * @param {*} response - the response object from a fetch request
+   * @returns {Promise<*>} if response is ok, resolves with the response. Else rejects with an error
+   */
+  const checkStatus = response => {
+  	if (response.ok) return response;
+  	else {
+  		const error = new Error(response.statusText || response.status);
+  		error.response = response;
+  		throw error;
+  	}
+  };
+
+  /**
+   * Parses a response to JSON
+   * @param {*} response - the response object from a fetch request
+   * @returns {Promise<*>} the parsed response object
+   */
+  const parseJSON = res => res.json();
+
+  /**
+   * Fetch with added utilities like check for status code and json parse
+   * @param {string} url - the url for this get request
+   * @param {*} [init] - An object containing any custom settings that you want to apply to the request
+   * @returns {Promise<*>} The resolved JSON parsed response if 200 Ok or rejection with the error reason
+   */
+  function get(url, init) {
+  	return fetch(url, init)
+  		.then(checkStatus)
+  		.then(parseJSON);
+  }
+
   var recommendations = () => {
   	const main = document.createElement('main');
-  	// main.setAttribute('id', 'recommendations');
+  	const section = document.createElement('section');
+  	main.appendChild(section);
   	console.log('Recommendations page');
+
+  	const user = getStoredData('user');
+  	const url = makeApiUrl();
+  	const config = {
+  		Authorization: `Bearer 3374c8bacbdd81eef70e7bb33d451efd`
+  	};
+  	get(url, config)
+  		.then(data => console.log(data.results));
 
 
 
@@ -237,7 +317,6 @@
 
   var profile = () => {
   	const main = document.createElement('main');
-  	// main.setAttribute('id', 'profile');
   	console.log('Profile Page');
 
 
@@ -249,13 +328,33 @@
   	return main;
   };
 
+  function setEmptyUser(){
+  	const emptyUser = {
+  		userID: 83913,
+  		age: null,
+  		city: null,
+  		postalCode: null,
+  		gender: null,
+  		genres: [],
+  		obaLocation: [],
+  		mediaType: [],
+  		loanCategory: []
+  	};
+
+  	if(!checkLocalStorage()) storeData('user', emptyUser);
+  }
+
   routie({
+  	'': init,
   	'profile': profilePage,
   	'recommendations': recommendationsPage
   });
 
-  routie('profile');
 
+  function init(){
+  	setEmptyUser();
+  	routie('profile');
+  }
 
   function recommendationsPage() {
   	removeOldPage();
@@ -269,7 +368,7 @@
   	body.appendChild(profile());
   }
 
-  function removeOldPage(){
+  function removeOldPage() {
   	const main = document.querySelector('main');
   	main.remove();
   }
