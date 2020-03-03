@@ -22,7 +22,7 @@ function profilePage() {
 	body.appendChild(profile());
 }
 
-function removeOldPage(){
+function removeOldPage() {
 	const main = document.querySelector('main');
 	main.remove();
 }

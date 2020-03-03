@@ -19,6 +19,5 @@ export function getStoredData(item) {
  * @returns {boolean}
  */
 export function checkLocalStorage(item) {
-	if(getStoredData()) return true;
-	else return false;
+	return getStoredData() ? true : false
 }
