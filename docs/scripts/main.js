@@ -246,10 +246,25 @@
   	return getStoredData() ? true : false
   }
 
-  function makeApiUrl(user) {
+  function genre(user) {
+  	if (user.genres.length === 0) {
+  		const goodDefaultSubjects = ['historische romans', 'sprookjes', 'romantische verhalen', 'oorlog', 'verhalenbundel'];
+  		const randomNum = Math.floor(Math.random() * 5);
+  		return [goodDefaultSubjects[randomNum]]
+  	} else {
+  		const numberOfBooks = user.genres.reduce((acc, item) => acc + item[1], 0);
+  		const treshold = (numberOfBooks > 5) ? 0.2 : 0;
+  		const importantGenres = [];
+
+  		user.genres.forEach(genre => (genre[1] / numberOfBooks >= treshold) ? importantGenres.push(genre[0]) : false);
+  		return importantGenres
+  	}
+  }
+
+  function makeApiUrl(subject) {
   	const cors = 'https://cors-anywhere.herokuapp.com/';
   	const endpoint = 'https://zoeken.oba.nl/api/v1/search/?q=';
-  	const query = 'tolkien';
+  	const query = subject;
   	const key = "ffbc1ededa6f23371bc40df1864843be";
   	const url = `${cors}${endpoint}${query}&authorization=${key}&detaillevel=Default&output=json`;
   	return url;
@@ -356,13 +371,23 @@
   	main.appendChild(section);
 
   	const user = getStoredData('user');
-  	const url = makeApiUrl();
-  	const config = {
-  		Authorization: `Bearer 3374c8bacbdd81eef70e7bb33d451efd`
-  	};
-  	get(url, config)
-  		.then(data => cleanData(data.results))
-  		.then(cleanData => buildCard(cleanData, section))
+  	const genrePriorities = genre(user);
+
+  	const fetches = genrePriorities.map(subject => {
+  		const url = makeApiUrl(subject);
+  		const config = {
+  			Authorization: `Bearer 3374c8bacbdd81eef70e7bb33d451efd`
+  		};
+  		return get(url, config)
+  	});
+
+  	Promise.all(fetches)
+  		.then(fetchResults => {
+  			fetchResults.forEach(data => {
+  				const cleanData$1 = cleanData(data.results);
+  				buildCard(cleanData$1, section);
+  			});
+  		})
   		.catch(err => handleFetchError(err));
 
   	return main;
@@ -398,20 +423,48 @@
   	main.remove();
   }
 
-  function setEmptyUser(){
+  function setEmptyUser() {
+  	// const emptyUser = {
+  	// 	userID: 83913,
+  	// 	age: null,
+  	// 	city: null,
+  	// 	postalCode: null,
+  	// 	gender: null,
+  	// 	genres: [],
+  	// 	obaLocation: [],
+  	// 	mediaType: [],
+  	// 	loanCategory: []
+  	// };
+
   	const emptyUser = {
-  		userID: 83913,
-  		age: null,
-  		city: null,
-  		postalCode: null,
-  		gender: null,
-  		genres: [],
-  		obaLocation: [],
-  		mediaType: [],
-  		loanCategory: []
+  		"userID": 83913,
+  		"age": 43,
+  		"city": "Amsterdam",
+  		"postalCode": "1022",
+  		"gender": "female",
+  		"genres": [
+  			["psychologische roman", 1],
+  			["thriller", 3],
+  			["biografie", 4],
+  			["stripverhaal", 2],
+  			["detectiveroman", 4]
+  		],
+  		"obaLocation": [
+  			["CEN", 10],
+  			["BVD", 4]
+  		],
+  		"mediaType": [
+  			["NF", 7],
+  			["JROM", 2],
+  			["ROM", 1],
+  			["DVDSPM", 4]
+  		],
+  		"loanCategory": [
+  			["VOLWS", 14]
+  		]
   	};
 
-  	if(!checkLocalStorage()) storeData('user', emptyUser);
+  	if (!checkLocalStorage()) storeData('user', emptyUser);
   }
 
   routie({

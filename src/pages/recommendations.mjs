@@ -1,6 +1,7 @@
 import {
 	getStoredData
 } from 'modules/localStorageHelper.mjs'
+import * as priorities from 'modules/priorities.mjs'
 import apiUrlMaker from 'modules/apiUrlMaker.mjs'
 import fetcher from 'modules/fetcher.mjs'
 import cleaner from 'modules/cleaner.mjs'
@@ -13,13 +14,23 @@ export default () => {
 	main.appendChild(section)
 
 	const user = getStoredData('user')
-	const url = apiUrlMaker(user)
-	const config = {
-		Authorization: `Bearer 3374c8bacbdd81eef70e7bb33d451efd`
-	};
-	fetcher(url, config)
-		.then(data => cleaner(data.results))
-		.then(cleanData => template.buildCard(cleanData, section))
+	const genrePriorities = priorities.genre(user)
+
+	const fetches = genrePriorities.map(subject => {
+		const url = apiUrlMaker(subject)
+		const config = {
+			Authorization: `Bearer 3374c8bacbdd81eef70e7bb33d451efd`
+		};
+		return fetcher(url, config)
+	});
+
+	Promise.all(fetches)
+		.then(fetchResults => {
+			fetchResults.forEach(data => {
+				const cleanData = cleaner(data.results)
+				template.buildCard(cleanData, section)
+			});
+		})
 		.catch(err => error(err))
 
 	return main;
