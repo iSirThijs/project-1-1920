@@ -1,8 +1,10 @@
 import * as step from 'templates/setupSteps.mjs';
 import { updateProfile, setEmptyUser } from 'modules/user.mjs'; 
+import { getStoredData } from 'modules/localStorageHelper.mjs';
+
 
 export default (nextStep) => {
-	console.log('Setup Page');
+	// console.log('Setup Page');
 	if(nextStep === 'welcome') setEmptyUser();
 	const main = document.createElement('main');
 	const section = createSetupStep(nextStep);
@@ -13,6 +15,8 @@ export default (nextStep) => {
 };
 
 function createSetupStep(nextStep) {
+	const user = getStoredData('user');
+
 	const section = document.createElement('section');
 	section.insertAdjacentHTML('beforeend', step[nextStep]);
 
@@ -20,8 +24,15 @@ function createSetupStep(nextStep) {
 	section.appendChild(links);
 
 	const checkboxes = section.querySelectorAll('input[type="checkbox"]');
-	console.log(checkboxes);
+	// console.log(checkboxes);
 	checkboxes.forEach((checkbox) => {
+		let checkboxID = checkbox.getAttribute('id');
+
+		if ( Array.isArray(user[checkboxID]) && user[checkboxID].length > 0) checkbox.checked = true;
+		else if(!Array.isArray(user[checkboxID]) && user[checkboxID]) checkbox.checked = true;
+		else checkbox.checked = false;
+		
+
 		checkbox.addEventListener('change', (event) => {
 			const key = event.target.name;
 			const checked = event.target.checked;

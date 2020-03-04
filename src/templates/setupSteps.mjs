@@ -1,7 +1,7 @@
-export const welcome = `
-	<h3>Welkom</h3>
+export  const welcome =
+	`<h3>Welkom</h3>
 	<p>OBA jouw boek geeft aanbevelingen voor boeken op basis van data die de OBA over jou heeft. Welke data daarvoor gebruikt wordt mag jij bepalen.</p>
-`;
+	`;
 
 export const user = `
 	<h3>Persoonsgegevens</h3>
@@ -31,3 +31,19 @@ export const loan = `
 		<label for="loanCategory">Categorie</label>
 	</form>
 	`;
+
+// export default function(data){
+// 	const title = `<h3>${data.title}</h3>`
+// 	const description = `<p>${data.description}</p>'
+// 	<form>
+// 		<input type="checkbox" id="${id}" name="${id}">
+// 		<label for="genres">Genres</label>
+// 		<input type="checkbox" id="obaLocation" name="obaLocation">
+// 		<label for="obaLocation">OBA locaties</label>
+// 		<input type="checkbox" id="mediaType" name="mediaType">
+// 		<label for="mediaType">Media type</label>
+// 		<input type="checkbox" id="loanCategory" name="loanCategory">
+// 		<label for="loanCategory">Categorie</label>
+// 	</form>
+// 	`;
+// }

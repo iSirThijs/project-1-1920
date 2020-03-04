@@ -243,10 +243,10 @@
   	return main;
   };
 
-  const welcome = `
-	<h3>Welkom</h3>
+  const welcome =
+  	`<h3>Welkom</h3>
 	<p>OBA jouw boek geeft aanbevelingen voor boeken op basis van data die de OBA over jou heeft. Welke data daarvoor gebruikt wordt mag jij bepalen.</p>
-`;
+	`;
 
   const user = `
 	<h3>Persoonsgegevens</h3>
@@ -276,6 +276,22 @@
 		<label for="loanCategory">Categorie</label>
 	</form>
 	`;
+
+  // export default function(data){
+  // 	const title = `<h3>${data.title}</h3>`
+  // 	const description = `<p>${data.description}</p>'
+  // 	<form>
+  // 		<input type="checkbox" id="${id}" name="${id}">
+  // 		<label for="genres">Genres</label>
+  // 		<input type="checkbox" id="obaLocation" name="obaLocation">
+  // 		<label for="obaLocation">OBA locaties</label>
+  // 		<input type="checkbox" id="mediaType" name="mediaType">
+  // 		<label for="mediaType">Media type</label>
+  // 		<input type="checkbox" id="loanCategory" name="loanCategory">
+  // 		<label for="loanCategory">Categorie</label>
+  // 	</form>
+  // 	`;
+  // }
 
   var step = /*#__PURE__*/Object.freeze({
     __proto__: null,
@@ -326,10 +342,10 @@
   function setEmptyUser(){
   	const emptyUser = {
   		userID: 83913,
-  		age: null,
-  		city: null,
-  		postalCode: null,
-  		gender: null,
+  		age: undefined,
+  		city: undefined,
+  		postalCode: undefined,
+  		gender: undefined,
   		genres: [],
   		obaLocation: [],
   		mediaType: [],
@@ -356,12 +372,6 @@
   		loanCategory: []
   	};
 
-  	console.log(key, checked);
-  	console.log(fakeUser);
-  	console.log(emptyUser);
-
-  	console.log(fakeUser[key], emptyUser[key]);
-
   	user[key] = checked ? fakeUser[key] : emptyUser[key];
 
   	storeData('user', user);
@@ -369,7 +379,7 @@
   }
 
   var setup = (nextStep) => {
-  	console.log('Setup Page');
+  	// console.log('Setup Page');
   	if(nextStep === 'welcome') setEmptyUser();
   	const main = document.createElement('main');
   	const section = createSetupStep(nextStep);
@@ -380,6 +390,8 @@
   };
 
   function createSetupStep(nextStep) {
+  	const user = getStoredData('user');
+
   	const section = document.createElement('section');
   	section.insertAdjacentHTML('beforeend', step[nextStep]);
 
@@ -387,8 +399,15 @@
   	section.appendChild(links);
 
   	const checkboxes = section.querySelectorAll('input[type="checkbox"]');
-  	console.log(checkboxes);
+  	// console.log(checkboxes);
   	checkboxes.forEach((checkbox) => {
+  		let checkboxID = checkbox.getAttribute('id');
+
+  		if ( Array.isArray(user[checkboxID]) && user[checkboxID].length > 0) checkbox.checked = true;
+  		else if(!Array.isArray(user[checkboxID]) && user[checkboxID]) checkbox.checked = true;
+  		else checkbox.checked = false;
+  		
+
   		checkbox.addEventListener('change', (event) => {
   			const key = event.target.name;
   			const checked = event.target.checked;
