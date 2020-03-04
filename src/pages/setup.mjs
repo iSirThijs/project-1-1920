@@ -58,12 +58,10 @@ function createLinks(nextStep){
 		break;
 	}
 	case 'loan' : {
-		div.insertAdjacentHTML('beforeend','<a href=\'#setup/user\'>Vorige</a><a href=\'#profile\'>Ga naar profiel</a><a href=\'#profile\'>Ga naar aanbevelingen</a>');
+		div.insertAdjacentHTML('beforeend','<a href=\'#setup/user\'>Vorige</a><a href=\'#profile\'>Ga naar profiel</a><a href=\'#recommendations\'>Ga naar aanbevelingen</a>');
 		break;
 	}
 	}
 	return div;
 	
 }
-
-//<div><button>Vorige</button><button>Volgende</button></div>

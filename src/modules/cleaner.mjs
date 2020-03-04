@@ -1,8 +1,5 @@
 export default function cleanData(data) {
-	console.log(data);
-
 	return data.map(item => {
-		console.log(item);
 		return {
 			title: item.titles ? item.titles[0] : 'Geen titel',
 			author: item.author ? item.authors[0] : 'Geen auteur',

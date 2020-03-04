@@ -255,8 +255,8 @@
   		const numberOfBooks = user.genres.reduce((acc, item) => acc + item[1], 0);
   		const treshold = (numberOfBooks > 5) ? 0.2 : 0;
   		const importantGenres = [];
-
-  		user.genres.forEach(genre => (genre[1] / numberOfBooks >= treshold) ? importantGenres.push(genre[0]) : false);
+  		const sortedGenres = user.genres.sort((lowest, highest) => highest[1] - lowest[1]);
+  		sortedGenres.forEach(genre => (genre[1] / numberOfBooks >= treshold) ? importantGenres.push(genre[0]) : false);
   		return importantGenres
   	}
   }
@@ -309,10 +309,7 @@
   }
 
   function cleanData(data) {
-  	console.log(data);
-
   	return data.map(item => {
-  		console.log(item);
   		return {
   			title: item.titles ? item.titles[0] : 'Geen titel',
   			author: item.author ? item.authors[0] : 'Geen auteur',
@@ -597,15 +594,13 @@
   		break;
   	}
   	case 'loan' : {
-  		div.insertAdjacentHTML('beforeend','<a href=\'#setup/user\'>Vorige</a><a href=\'#profile\'>Ga naar profiel</a><a href=\'#profile\'>Ga naar aanbevelingen</a>');
+  		div.insertAdjacentHTML('beforeend','<a href=\'#setup/user\'>Vorige</a><a href=\'#profile\'>Ga naar profiel</a><a href=\'#recommendations\'>Ga naar aanbevelingen</a>');
   		break;
   	}
   	}
   	return div;
   	
   }
-
-  //<div><button>Vorige</button><button>Volgende</button></div>
 
   function recommendationsPage() {
   	removeOldPage();
