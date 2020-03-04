@@ -177,11 +177,30 @@ a {
     text-align: center;
     padding: 15px 0;
     margin: 10px 0 10px 0;
+    cursor: pointer;
 }
 
 
 section:not(:first-of-type) .seperator {
     margin-top: 100px;
+}
+
+
+
+/* Toggle cards content */
+
+section.hidden+section .seperator {
+    margin-top: 20px;
+}
+
+section.hidden .seperator {
+    padding-bottom: 5px;
+}
+
+section.hidden .seperator p,
+section.hidden a {
+    position: absolute;
+    left: -9999px;
 }
 
 

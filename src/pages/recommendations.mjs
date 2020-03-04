@@ -7,6 +7,7 @@ import fetcher from 'modules/fetcher.mjs'
 import cleaner from 'modules/cleaner.mjs'
 import * as template from 'modules/template.mjs'
 import error from 'modules/error.mjs'
+import * as interaction from 'modules/interaction.mjs'
 
 export default () => {
 	const main = document.createElement('main');
@@ -28,7 +29,9 @@ export default () => {
 				const section = document.createElement('section')
 				main.appendChild(section)
 
-				template.buildSeperator(genrePriorities[i], section)
+				const seperator = template.buildSeperator(genrePriorities[i], section)
+				seperator.addEventListener('click', () => interaction.toggleContent(seperator))
+
 				const cleanData = cleaner(data.results)
 				template.buildCard(cleanData, section)
 			});

@@ -13,4 +13,5 @@ export function buildErrorMsg(err, target) {
 
 export function buildSeperator(subject, target) {
     target.insertAdjacentHTML('beforeend', seperator(subject))
+    return document.querySelector('main > section:last-of-type > div:first-of-type')
 }

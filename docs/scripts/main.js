@@ -366,6 +366,7 @@
 
   function buildSeperator(subject, target) {
       target.insertAdjacentHTML('beforeend', seperator(subject));
+      return document.querySelector('main > section:last-of-type > div:first-of-type')
   }
 
   function handleFetchError(err) {
@@ -398,7 +399,9 @@
   				const section = document.createElement('section');
   				main.appendChild(section);
 
-  				buildSeperator(genrePriorities[i], section);
+  				const seperator = buildSeperator(genrePriorities[i], section);
+  				seperator.addEventListener('click', () => toggleContent(seperator));
+
   				const cleanData$1 = cleanData(data.results);
   				buildCard(cleanData$1, section);
   			});
@@ -407,6 +410,11 @@
 
   	return main;
   };
+
+  function toggleContent(el) {
+  	const container = el.parentElement;
+  	container.classList.toggle('hidden');
+  }
 
   var profile = () => {
   	const main = document.createElement('main');
