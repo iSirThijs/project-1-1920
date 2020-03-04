@@ -317,23 +317,17 @@
 
   var profile = () => {
   	const main = document.createElement('main');
-<<<<<<< ours
   	console.log('Profile Page');
 
 
 
 
 
-=======
-  	console.log('Profile page');
->>>>>>> theirs
 
 
   	return main;
   };
 
-<<<<<<< ours
-=======
   const welcome =
   	`<h3>Welkom</h3>
 	<p>OBA jouw boek geeft aanbevelingen voor boeken op basis van data die de OBA over jou heeft. Welke data daarvoor gebruikt wordt mag jij bepalen.</p>
@@ -391,31 +385,6 @@
     loan: loan
   });
 
-  function storeData(name, item) {
-  	localStorage.setItem(name, JSON.stringify(item));
-  }
-
-  /**
-   * saves an value into local storage
-   * @export
-   * @param {*} item - the value to save into localstorage
-   * @returns
-   */
-  function getStoredData(item) {
-  	return JSON.parse(localStorage.getItem(item));
-  }
-
-  /**
-   * check if there is data in local storage
-   * @export
-   * @param {String} - the item to check
-   * @returns {boolean}
-   */
-  function checkLocalStorage(item) {
-  	if(getStoredData()) return true;
-  	else return false;
-  }
-
   var fakeUserImport = fakeUser => {
   	return {
   		userID: 83913,
@@ -430,7 +399,6 @@
   	}
   };
 
->>>>>>> theirs
   function setEmptyUser(){
   	const emptyUser = {
   		userID: 83913,
@@ -564,9 +532,6 @@
   	body.appendChild(profile());
   }
 
-<<<<<<< ours
-  function removeOldPage() {
-=======
   function setupPage(step) {
   	removeOldPage();
   	const body = document.body;
@@ -574,7 +539,7 @@
   }
 
   function removeOldPage(){
->>>>>>> theirs
+
   	const main = document.querySelector('main');
   	main.remove();
   }
