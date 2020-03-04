@@ -1,12 +1,6 @@
 export default () => {
 	const main = document.createElement('main');
-	// main.setAttribute('id', 'profile');
-	console.log('Profile Page');
-
-
-
-
-
+	console.log('Profile page');
 
 
 	return main;

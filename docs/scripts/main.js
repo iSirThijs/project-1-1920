@@ -237,17 +237,52 @@
 
   var profile = () => {
   	const main = document.createElement('main');
-  	// main.setAttribute('id', 'profile');
-  	console.log('Profile Page');
-
-
-
-
-
+  	console.log('Profile page');
 
 
   	return main;
   };
+
+  const welcome = `
+	<h3>Welkom</h3>
+	<p>OBA jouw boek geeft aanbevelingen voor boeken op basis van data die de OBA over jou heeft. Welke data daarvoor gebruikt wordt mag jij bepalen.</p>
+`;
+
+  const user = `
+	<h3>Persoonsgegevens</h3>
+	<p>Persoonsgegevens gaan over wie jij bent, zoals hoe oud je bent of waar je woont</p>
+	<form>
+		<input type="checkbox" id="age" name="age">
+		<label for="age">Leeftijd</label>
+		<input type="checkbox" id="city" name="city">
+		<label for="city">Woonplaats</label>
+		<input type="checkbox" id="postalCode" name="postalCode">
+		<label for="postalcode">Postcode</label>
+		<input type="checkbox" id="gender" name="gender">
+		<label for="gender">geslacht</label>
+	</form>`;
+
+  const loan = `
+	<h3>Leengeschiedenis</h3>
+	<p>Leengeschiedenis gaat over wat je bij de OBA hebt geleend, zoals het soort boek of welke auteurs je leest</p>
+	<form>
+		<input type="checkbox" id="genres" name="genres">
+		<label for="genres">Genres</label>
+		<input type="checkbox" id="obaLocation" name="obaLocation">
+		<label for="obaLocation">OBA locaties</label>
+		<input type="checkbox" id="mediaType" name="mediaType">
+		<label for="mediaType">Media type</label>
+		<input type="checkbox" id="loanCategory" name="loanCategory">
+		<label for="loanCategory">Categorie</label>
+	</form>
+	`;
+
+  var step = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    welcome: welcome,
+    user: user,
+    loan: loan
+  });
 
   function storeData(name, item) {
   	localStorage.setItem(name, JSON.stringify(item));
@@ -274,6 +309,20 @@
   	else return false;
   }
 
+  var fakeUserImport = fakeUser => {
+  	return {
+  		userID: 83913,
+  		age: 43,
+  		city: 'Amsterdam',
+  		postalCode: 1022,
+  		gender: 'female',
+  		genres: [['psychologische roman', 1], ['thriller', 3], ['biografie', 4], ['stripverhaal', 2], ['detectiveroman', 4]],
+  		obaLocation: [['CEN', 10], ['BVD', 4]],
+  		mediaType: [['NF', 7], ['JROM', 2], ['ROM', 1], ['DVDSPM', 4] ],
+  		loanCategory: [['VOLWS', 14]]
+  	}
+  };
+
   function setEmptyUser(){
   	const emptyUser = {
   		userID: 83913,
@@ -288,19 +337,109 @@
   	};
 
   	if(!checkLocalStorage()) storeData('user', emptyUser);
+  	return emptyUser;
   }
+
+
+  function updateProfile(key, checked) {
+  	const fakeUser = fakeUserImport();
+  	const user = getStoredData('user');
+  	const emptyUser = {
+  		userID: 83913,
+  		age: null,
+  		city: null,
+  		postalCode: null,
+  		gender: null,
+  		genres: [],
+  		obaLocation: [],
+  		mediaType: [],
+  		loanCategory: []
+  	};
+
+  	console.log(key, checked);
+  	console.log(fakeUser);
+  	console.log(emptyUser);
+
+  	console.log(fakeUser[key], emptyUser[key]);
+
+  	user[key] = checked ? fakeUser[key] : emptyUser[key];
+
+  	storeData('user', user);
+
+  }
+
+  var setup = (nextStep) => {
+  	console.log('Setup Page');
+  	if(nextStep === 'welcome') setEmptyUser();
+  	const main = document.createElement('main');
+  	const section = createSetupStep(nextStep);
+
+  	main.appendChild(section);
+
+  	return main;
+  };
+
+  function createSetupStep(nextStep) {
+  	const section = document.createElement('section');
+  	section.insertAdjacentHTML('beforeend', step[nextStep]);
+
+  	const links = createLinks(nextStep);
+  	section.appendChild(links);
+
+  	const checkboxes = section.querySelectorAll('input[type="checkbox"]');
+  	console.log(checkboxes);
+  	checkboxes.forEach((checkbox) => {
+  		checkbox.addEventListener('change', (event) => {
+  			const key = event.target.name;
+  			const checked = event.target.checked;
+
+  			updateProfile(key, checked);
+  		});
+  	});
+  	
+  	return section;
+  }
+
+
+  function createLinks(nextStep){
+  	const div = document.createElement('div');
+
+  	switch(nextStep){
+  	case 'welcome' : {
+  		div.insertAdjacentHTML('beforeend','<a href=\'#setup/user\'>Volgende</a>');
+  		break;
+  	}
+  	case 'user' : {
+  		div.insertAdjacentHTML('beforeend','<a href=\'#setup/welcome\'>Vorige</a><a href=\'#setup/loan\'>Volgende</a>');
+  		break;
+  	}
+  	case 'loan' : {
+  		div.insertAdjacentHTML('beforeend','<a href=\'#setup/user\'>Vorige</a><a href=\'#profile\'>Ga naar profiel</a><a href=\'#profile\'>Ga naar aanbevelingen</a>');
+  		break;
+  	}
+  	}
+  	return div;
+  	
+  }
+
+  //<div><button>Vorige</button><button>Volgende</button></div>
 
   routie({
   	'': init,
   	'profile': profilePage,
-  	'recommendations': recommendationsPage
+  	'recommendations': recommendationsPage,
+  	'setup': () => routie('setup/welcome'),
+  	'setup/:step': setupPage,
   });
 
-
   function init(){
-  	setEmptyUser();
-  	routie('profile');
-  }
+  	// temp clear of user data
+  	localStorage.removeItem('user');
+
+  	if (checkLocalStorage()) routie('profile');
+  	else {
+  		routie('setup');
+  	}}
 
   function recommendationsPage() {
   	removeOldPage();
@@ -312,6 +451,12 @@
   	removeOldPage();
   	const body = document.body;
   	body.appendChild(profile());
+  }
+
+  function setupPage(step) {
+  	removeOldPage();
+  	const body = document.body;
+  	body.appendChild(setup(step));
   }
 
   function removeOldPage(){
