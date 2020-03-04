@@ -3,9 +3,7 @@ import errorMsg from 'templates/errorMsg.mjs'
 import seperator from 'templates/seperator.mjs'
 
 export function buildCard(data, target) {
-    data.forEach(item => {
-        target.insertAdjacentHTML('beforeend', card(item))
-    });
+    data.forEach(item => target.insertAdjacentHTML('beforeend', card(item)))
 }
 
 export function buildErrorMsg(err, target) {

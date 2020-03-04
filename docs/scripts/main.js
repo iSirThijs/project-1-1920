@@ -345,18 +345,18 @@
   };
 
   var seperator = (subject) => {
+  	const user = getStoredData('user');
+
   	return `
 	<div class="seperator">
 		<h2>${subject}</h2>
-		<p>additionele informatie</p>
+		<p>${user.genres.length === 0 ? 'Random categorie opgehaald' : 'Gebaseerd op uw leengeschiedenis'}</p>
 	</div>
 	`;
   };
 
   function buildCard(data, target) {
-      data.forEach(item => {
-          target.insertAdjacentHTML('beforeend', card(item));
-      });
+      data.forEach(item => target.insertAdjacentHTML('beforeend', card(item)));
   }
 
   function buildErrorMsg(err, target) {
