@@ -27,6 +27,10 @@ body {
     background-color: var(--primary-background-color);
 }
 
+:focus {
+    outline: none
+}
+
 
 
 /* Navigation */
@@ -69,7 +73,6 @@ header nav ul li:last-of-type {
 }
 
 header nav ul li a {
-    text-decoration: none;
     color: var(--text-color);
     opacity: 0.5;
 }
@@ -95,6 +98,9 @@ main {
     max-width: 1200px;
     width: 100vw;
     margin: 0 auto;
+}
+
+main section {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -110,37 +116,41 @@ h4 {
 p {
     margin: 0;
     color: var(--text-color);
+    font-size: 16px;
 }
 
-
+a {
+    text-decoration: none;
+}
 
 
 /* Card */
 
-article {
+main section article {
     background-color: var(--secondary-background-color);
-    max-width: 350px;
-    min-width: 300px;
+    width: 325px;
     padding: 20px;
     margin: 15px;
+    height: calc(100% - 30px);
     box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.102);
     border-bottom: 4px solid var(--secondary-background-color);
     cursor: pointer;
 }
 
-article:hover {
+main section article:hover {
     border-bottom: 4px solid var(--primary-color);
 }
 
-article h4 {
+main section article h4 {
     margin-bottom: 5px;
     line-height: 1;
 }
 
-article p:first-of-type {
+main section a article p:first-of-type {
     margin-bottom: 5px;
+    font-size: 14px;
 }
 
-article p:last-of-type {
+main section article p:last-of-type {
     font-weight: bolder;
 }

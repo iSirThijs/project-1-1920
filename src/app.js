@@ -1,7 +1,9 @@
 import 'modules/routie.js';
 import recommendations from 'pages/recommendations.mjs';
 import profile from 'pages/profile.mjs';
-import { setEmptyUser } from 'modules/user.mjs';
+import {
+	setEmptyUser
+} from 'modules/user.mjs';
 
 routie({
 	'': init,
@@ -10,11 +12,12 @@ routie({
 });
 
 
-function init(){
+function init() {
 	setEmptyUser();
 	routie('profile');
 }
 
+//todo: zet in aparte module
 function recommendationsPage() {
 	removeOldPage();
 	const body = document.body;

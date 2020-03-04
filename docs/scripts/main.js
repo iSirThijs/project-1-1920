@@ -293,11 +293,41 @@
   		.then(parseJSON);
   }
 
+  function cleanData(data) {
+  	return data.map(item => {
+  		return {
+  			title: item.titles[0],
+  			author: item.authors[0],
+  			summary: item.summaries ? item.summaries[0] : 'Geen samenvatting',
+  			format: item.formats[0].text,
+  			year: parseInt(item.year),
+  			detailLink: item.detailLink
+  		}
+  	});
+  }
+
+  var card = (data) => {
+  	return `
+	<a href="${data.detailLink}" target="_blank">
+		<article>
+			<h4>${data.title}</h4>
+			<p>${data.author}</p>
+			<p>${data.summary}</p>
+		</article>
+	</a>
+	`;
+  };
+
+  function buildCard(data, target) {
+      data.forEach(item => {
+          target.insertAdjacentHTML('beforeend', card(item));
+      });
+  }
+
   var recommendations = () => {
   	const main = document.createElement('main');
   	const section = document.createElement('section');
   	main.appendChild(section);
-  	console.log('Recommendations page');
 
   	const user = getStoredData('user');
   	const url = makeApiUrl();
@@ -305,12 +335,9 @@
   		Authorization: `Bearer 3374c8bacbdd81eef70e7bb33d451efd`
   	};
   	get(url, config)
-  		.then(data => console.log(data.results));
-
-
-
-
-
+  		.then(data => cleanData(data.results))
+  		.then(cleanData => buildCard(cleanData, section))
+  		.catch(err => console.log(err));
 
   	return main;
   };
@@ -351,11 +378,12 @@
   });
 
 
-  function init(){
+  function init() {
   	setEmptyUser();
   	routie('profile');
   }
 
+  //todo: zet in aparte module
   function recommendationsPage() {
   	removeOldPage();
   	const body = document.body;
