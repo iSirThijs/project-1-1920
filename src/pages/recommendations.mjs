@@ -7,7 +7,7 @@ import fetcher from 'modules/fetcher.mjs'
 import cleaner from 'modules/cleaner.mjs'
 import * as template from 'modules/template.mjs'
 import error from 'modules/error.mjs'
-import * as interaction from 'modules/interaction.mjs'
+import * as interaction from 'modules/interactions.mjs'
 
 export default () => {
 	const main = document.createElement('main');
