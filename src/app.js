@@ -1,33 +1,24 @@
 import 'modules/routie.js';
 import recommendations from 'pages/recommendations.mjs';
 import profile from 'pages/profile.mjs';
-import { setEmptyUser } from 'modules/user.mjs';
+import setup from 'pages/setup.mjs';
+import { checkLocalStorage } from 'modules/localStorageHelper.mjs';
+import * as route from 'modules/router.mjs';
 
 routie({
 	'': init,
-	'profile': profilePage,
-	'recommendations': recommendationsPage
+	'profile': route.profilePage,
+	'recommendations': route.recommendationsPage,
+	'setup': () => routie('setup/welcome'),
+	'setup/:step': route.setupPage
 });
 
-
 function init(){
-	setEmptyUser();
-	routie('profile');
-}
+	// temp clear of user data
+	localStorage.removeItem('user');
 
-function recommendationsPage() {
-	removeOldPage();
-	const body = document.body;
-	body.appendChild(recommendations());
-}
-
-function profilePage() {
-	removeOldPage();
-	const body = document.body;
-	body.appendChild(profile());
-}
-
-function removeOldPage() {
-	const main = document.querySelector('main');
-	main.remove();
+	if (checkLocalStorage('user')) routie('profile');
+	else {
+		routie('setup');
+	};
 }

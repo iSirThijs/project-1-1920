@@ -246,10 +246,25 @@
   	return getStoredData() ? true : false
   }
 
-  function makeApiUrl(user) {
+  function genre(user) {
+  	if (user.genres.length === 0) {
+  		const goodDefaultSubjects = ['historische romans', 'sprookjes', 'romantische verhalen', 'oorlog', 'verhalenbundel'];
+  		const randomNum = Math.floor(Math.random() * 5);
+  		return [goodDefaultSubjects[randomNum]]
+  	} else {
+  		const numberOfBooks = user.genres.reduce((acc, item) => acc + item[1], 0);
+  		const treshold = (numberOfBooks > 5) ? 0.2 : 0;
+  		const importantGenres = [];
+  		const sortedGenres = user.genres.sort((lowest, highest) => highest[1] - lowest[1]);
+  		sortedGenres.forEach(genre => (genre[1] / numberOfBooks >= treshold) ? importantGenres.push(genre[0]) : false);
+  		return importantGenres
+  	}
+  }
+
+  function makeApiUrl(subject) {
   	const cors = 'https://cors-anywhere.herokuapp.com/';
   	const endpoint = 'https://zoeken.oba.nl/api/v1/search/?q=';
-  	const query = 'tolkien';
+  	const query = subject;
   	const key = "ffbc1ededa6f23371bc40df1864843be";
   	const url = `${cors}${endpoint}${query}&authorization=${key}&detaillevel=Default&output=json`;
   	return url;
@@ -290,27 +305,113 @@
   function get(url, init) {
   	return fetch(url, init)
   		.then(checkStatus)
-  		.then(parseJSON);
+  		.then(parseJSON)
+  }
+
+  function cleanData(data) {
+  	return data.map(item => {
+  		return {
+  			title: item.titles ? item.titles[0] : 'Geen titel',
+  			author: item.author ? item.authors[0] : 'Geen auteur',
+  			summary:item.summaries ? item.summaries : 'Geen samenvatting',
+  			format:item.formats ? item.formats[0].text : 'Geen formaat',
+  			year:item.year ? parseInt(item.year) : 'Geen jaar',
+  			detailLink: item.detailLink
+  		};
+  	});
+  }
+
+  var card = (data) => {
+  	return `
+	<a href="${data.detailLink}" target="_blank">
+		<article class="card">
+			<h4>${data.title}</h4>
+			<p>${data.author}</p>
+			<p>${data.summary}</p>
+		</article>
+	</a>
+	`;
+  };
+
+  var errorMsg = (err) => {
+  	return `
+	<div class="error">
+		<h4>Oops, er is iets misgegaan</h4>
+		<p>We konden uw aanbevelingen niet voor u ophalen uit de OBA database!</p>
+		<p>Klik op dit bericht om opnieuw te proberen. Als dat niet werkt kunt u het later nog een keer proberen.</p>
+		<i>${err}</i>
+	</div>
+	`;
+  };
+
+  var seperator = (subject) => {
+  	const user = getStoredData('user');
+
+  	return `
+	<div class="seperator">
+		<h2>${subject}</h2>
+		<p>${user.genres.length === 0 ? 'Random categorie opgehaald' : 'Gebaseerd op uw leengeschiedenis'}</p>
+	</div>
+	`;
+  };
+
+  function buildCard(data, target) {
+      data.forEach(item => target.insertAdjacentHTML('beforeend', card(item)));
+  }
+
+  function buildErrorMsg(err, target) {
+      target.insertAdjacentHTML('beforebegin', errorMsg(err));
+      return document.querySelector('main > div:first-of-type')
+  }
+
+  function buildSeperator(subject, target) {
+      target.insertAdjacentHTML('beforeend', seperator(subject));
+      return document.querySelector('main > section:last-of-type > div:first-of-type')
+  }
+
+  function handleFetchError(err) {
+  	console.error('Error while fetching ', err);
+
+  	const main = document.querySelector('main');
+  	const errorBox = buildErrorMsg(err, main);
+
+  	//Add reload function
+  	errorBox.addEventListener('click', () => location.reload());
+  }
+
+  function toggleContent(el) {
+  	const container = el.parentElement;
+  	container.classList.toggle('hidden');
   }
 
   var recommendations = () => {
   	const main = document.createElement('main');
-  	const section = document.createElement('section');
-  	main.appendChild(section);
-  	console.log('Recommendations page');
 
   	const user = getStoredData('user');
-  	const url = makeApiUrl();
-  	const config = {
-  		Authorization: `Bearer 3374c8bacbdd81eef70e7bb33d451efd`
-  	};
-  	get(url, config)
-  		.then(data => console.log(data.results));
+  	const genrePriorities = genre(user);
 
+  	const fetches = genrePriorities.map(subject => {
+  		const url = makeApiUrl(subject);
+  		const config = {
+  			Authorization: `Bearer 3374c8bacbdd81eef70e7bb33d451efd`
+  		};
+  		return get(url, config)
+  	});
 
+  	Promise.all(fetches)
+  		.then(fetchResults => {
+  			fetchResults.forEach((data, i) => {
+  				const section = document.createElement('section');
+  				main.appendChild(section);
 
+  				const seperator = buildSeperator(genrePriorities[i], section);
+  				seperator.addEventListener('click', () => toggleContent(seperator));
 
-
+  				const cleanData$1 = cleanData(data.results);
+  				buildCard(cleanData$1, section);
+  			});
+  		})
+  		.catch(err => handleFetchError(err));
 
   	return main;
   };
@@ -328,7 +429,98 @@
   	return main;
   };
 
-  function setEmptyUser(){
+  const welcome =
+  	`<h3>Welkom</h3>
+	<p>OBA jouw boek geeft aanbevelingen voor boeken op basis van data die de OBA over jou heeft. Welke data daarvoor gebruikt wordt mag jij bepalen.</p>
+	`;
+
+  const user = `
+	<h3>Persoonsgegevens</h3>
+	<p>Persoonsgegevens gaan over wie jij bent, zoals hoe oud je bent of waar je woont</p>
+	<form>
+		<input type="checkbox" id="age" name="age">
+		<label for="age">Leeftijd</label>
+		<input type="checkbox" id="city" name="city">
+		<label for="city">Woonplaats</label>
+		<input type="checkbox" id="postalCode" name="postalCode">
+		<label for="postalcode">Postcode</label>
+		<input type="checkbox" id="gender" name="gender">
+		<label for="gender">geslacht</label>
+	</form>`;
+
+  const loan = `
+	<h3>Leengeschiedenis</h3>
+	<p>Leengeschiedenis gaat over wat je bij de OBA hebt geleend, zoals het soort boek of welke auteurs je leest</p>
+	<form>
+		<input type="checkbox" id="genres" name="genres">
+		<label for="genres">Genres</label>
+		<input type="checkbox" id="obaLocation" name="obaLocation">
+		<label for="obaLocation">OBA locaties</label>
+		<input type="checkbox" id="mediaType" name="mediaType">
+		<label for="mediaType">Media type</label>
+		<input type="checkbox" id="loanCategory" name="loanCategory">
+		<label for="loanCategory">Categorie</label>
+	</form>
+	`;
+
+  // export default function(data){
+  // 	const title = `<h3>${data.title}</h3>`
+  // 	const description = `<p>${data.description}</p>'
+  // 	<form>
+  // 		<input type="checkbox" id="${id}" name="${id}">
+  // 		<label for="genres">Genres</label>
+  // 		<input type="checkbox" id="obaLocation" name="obaLocation">
+  // 		<label for="obaLocation">OBA locaties</label>
+  // 		<input type="checkbox" id="mediaType" name="mediaType">
+  // 		<label for="mediaType">Media type</label>
+  // 		<input type="checkbox" id="loanCategory" name="loanCategory">
+  // 		<label for="loanCategory">Categorie</label>
+  // 	</form>
+  // 	`;
+  // }
+
+  var step = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    welcome: welcome,
+    user: user,
+    loan: loan
+  });
+
+  var fakeUserImport = fakeUser => {
+  	return {
+  		userID: 83913,
+  		age: 43,
+  		city: 'Amsterdam',
+  		postalCode: 1022,
+  		gender: 'female',
+  		genres: [['psychologische roman', 1], ['horror', 3], ['biografie', 4], ['stripverhaal', 2], ['detectiveroman', 4]],
+  		obaLocation: [['CEN', 10], ['BVD', 4]],
+  		mediaType: [['NF', 7], ['JROM', 2], ['ROM', 1], ['DVDSPM', 4] ],
+  		loanCategory: [['VOLWS', 14]]
+  	}
+  };
+
+  function setEmptyUser() {
+  const emptyUser = {
+  		userID: 83913,
+  		age: undefined,
+  		city: undefined,
+  		postalCode: undefined,
+  		gender: undefined,
+  		genres: [],
+  		obaLocation: [],
+  		mediaType: [],
+  		loanCategory: []
+  	};
+
+  	if(!checkLocalStorage()) storeData('user', emptyUser);
+  	return emptyUser;
+  }
+
+
+  function updateProfile(key, checked) {
+  	const fakeUser = fakeUserImport();
+  	const user = getStoredData('user');
   	const emptyUser = {
   		userID: 83913,
   		age: null,
@@ -341,19 +533,73 @@
   		loanCategory: []
   	};
 
-  	if(!checkLocalStorage()) storeData('user', emptyUser);
+  	user[key] = checked ? fakeUser[key] : emptyUser[key];
+
+  	storeData('user', user);
+
   }
 
-  routie({
-  	'': init,
-  	'profile': profilePage,
-  	'recommendations': recommendationsPage
-  });
+  var setup = (nextStep) => {
+  	// console.log('Setup Page');
+  	if(nextStep === 'welcome') setEmptyUser();
+  	const main = document.createElement('main');
+  	const section = createSetupStep(nextStep);
+
+  	main.appendChild(section);
+
+  	return main;
+  };
+
+  function createSetupStep(nextStep) {
+  	const user = getStoredData('user');
+
+  	const section = document.createElement('section');
+  	section.insertAdjacentHTML('beforeend', step[nextStep]);
+
+  	const links = createLinks(nextStep);
+  	section.appendChild(links);
+
+  	const checkboxes = section.querySelectorAll('input[type="checkbox"]');
+  	// console.log(checkboxes);
+  	checkboxes.forEach((checkbox) => {
+  		let checkboxID = checkbox.getAttribute('id');
+
+  		if ( Array.isArray(user[checkboxID]) && user[checkboxID].length > 0) checkbox.checked = true;
+  		else if(!Array.isArray(user[checkboxID]) && user[checkboxID]) checkbox.checked = true;
+  		else checkbox.checked = false;
+  		
+
+  		checkbox.addEventListener('change', (event) => {
+  			const key = event.target.name;
+  			const checked = event.target.checked;
+
+  			updateProfile(key, checked);
+  		});
+  	});
+  	
+  	return section;
+  }
 
 
-  function init(){
-  	setEmptyUser();
-  	routie('profile');
+  function createLinks(nextStep){
+  	const div = document.createElement('div');
+
+  	switch(nextStep){
+  	case 'welcome' : {
+  		div.insertAdjacentHTML('beforeend','<a href=\'#setup/user\'>Volgende</a>');
+  		break;
+  	}
+  	case 'user' : {
+  		div.insertAdjacentHTML('beforeend','<a href=\'#setup/welcome\'>Vorige</a><a href=\'#setup/loan\'>Volgende</a>');
+  		break;
+  	}
+  	case 'loan' : {
+  		div.insertAdjacentHTML('beforeend','<a href=\'#setup/user\'>Vorige</a><a href=\'#profile\'>Ga naar profiel</a><a href=\'#recommendations\'>Ga naar aanbevelingen</a>');
+  		break;
+  	}
+  	}
+  	return div;
+  	
   }
 
   function recommendationsPage() {
@@ -372,6 +618,29 @@
   	const main = document.querySelector('main');
   	main.remove();
   }
+
+  function setupPage(step) {
+  	removeOldPage();
+  	const body = document.body;
+  	body.appendChild(setup(step));
+  }
+
+  routie({
+  	'': init,
+  	'profile': profilePage,
+  	'recommendations': recommendationsPage,
+  	'setup': () => routie('setup/welcome'),
+  	'setup/:step': setupPage
+  });
+
+  function init(){
+  	// temp clear of user data
+  	localStorage.removeItem('user');
+
+  	if (checkLocalStorage()) routie('profile');
+  	else {
+  		routie('setup');
+  	}}
 
 })));
 //# sourceMappingURL=main.js.map
