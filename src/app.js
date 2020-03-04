@@ -1,18 +1,25 @@
 import 'modules/routie.js';
 import recommendations from 'pages/recommendations.mjs';
 import profile from 'pages/profile.mjs';
-import { setEmptyUser } from 'modules/user.mjs';
+import setup from 'pages/setup.mjs';
+import { checkLocalStorage } from 'modules/localStorageHelper.mjs';
 
 routie({
 	'': init,
 	'profile': profilePage,
-	'recommendations': recommendationsPage
+	'recommendations': recommendationsPage,
+	'setup': () => routie('setup/welcome'),
+	'setup/:step': setupPage,
 });
 
-
 function init(){
-	setEmptyUser();
-	routie('profile');
+	// temp clear of user data
+	localStorage.removeItem('user');
+
+	if (checkLocalStorage('user')) routie('profile');
+	else {
+		routie('setup');
+	};
 }
 
 function recommendationsPage() {
@@ -27,7 +34,14 @@ function profilePage() {
 	body.appendChild(profile());
 }
 
-function removeOldPage() {
+function setupPage(step) {
+	removeOldPage();
+	const body = document.body;
+	body.appendChild(setup(step));
+}
+
+function removeOldPage(){
+
 	const main = document.querySelector('main');
 	main.remove();
 }
