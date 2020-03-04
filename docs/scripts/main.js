@@ -355,6 +355,23 @@
   	return main;
   };
 
+  function recommendationsPage() {
+  	removeOldPage();
+  	const body = document.body;
+  	body.appendChild(recommendations());
+  }
+
+  function profilePage() {
+  	removeOldPage();
+  	const body = document.body;
+  	body.appendChild(profile());
+  }
+
+  function removeOldPage() {
+  	const main = document.querySelector('main');
+  	main.remove();
+  }
+
   function setEmptyUser(){
   	const emptyUser = {
   		userID: 83913,
@@ -381,24 +398,6 @@
   function init() {
   	setEmptyUser();
   	routie('profile');
-  }
-
-  //todo: zet in aparte module
-  function recommendationsPage() {
-  	removeOldPage();
-  	const body = document.body;
-  	body.appendChild(recommendations());
-  }
-
-  function profilePage() {
-  	removeOldPage();
-  	const body = document.body;
-  	body.appendChild(profile());
-  }
-
-  function removeOldPage() {
-  	const main = document.querySelector('main');
-  	main.remove();
   }
 
 })));
