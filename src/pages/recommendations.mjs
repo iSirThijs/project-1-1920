@@ -10,8 +10,6 @@ import error from 'modules/error.mjs'
 
 export default () => {
 	const main = document.createElement('main');
-	const section = document.createElement('section')
-	main.appendChild(section)
 
 	const user = getStoredData('user')
 	const genrePriorities = priorities.genre(user)
@@ -26,7 +24,11 @@ export default () => {
 
 	Promise.all(fetches)
 		.then(fetchResults => {
-			fetchResults.forEach(data => {
+			fetchResults.forEach((data, i) => {
+				const section = document.createElement('section')
+				main.appendChild(section)
+
+				template.buildSeperator(genrePriorities[i], section)
 				const cleanData = cleaner(data.results)
 				template.buildCard(cleanData, section)
 			});

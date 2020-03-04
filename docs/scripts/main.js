@@ -324,7 +324,7 @@
   var card = (data) => {
   	return `
 	<a href="${data.detailLink}" target="_blank">
-		<article>
+		<article class="card">
 			<h4>${data.title}</h4>
 			<p>${data.author}</p>
 			<p>${data.summary}</p>
@@ -335,11 +335,20 @@
 
   var errorMsg = (err) => {
   	return `
-	<div id="error">
+	<div class="error">
 		<h4>Oops, er is iets misgegaan</h4>
 		<p>We konden uw aanbevelingen niet voor u ophalen uit de OBA database!</p>
 		<p>Klik op dit bericht om opnieuw te proberen. Als dat niet werkt kunt u het later nog een keer proberen.</p>
 		<i>${err}</i>
+	</div>
+	`;
+  };
+
+  var seperator = (subject) => {
+  	return `
+	<div class="seperator">
+		<h2>${subject}</h2>
+		<p>additionele informatie</p>
 	</div>
 	`;
   };
@@ -355,11 +364,15 @@
       return document.querySelector('main > div:first-of-type')
   }
 
+  function buildSeperator(subject, target) {
+      target.insertAdjacentHTML('beforeend', seperator(subject));
+  }
+
   function handleFetchError(err) {
   	console.error('Error while fetching ', err);
 
-  	const section = document.querySelector('main section');
-  	const errorBox = buildErrorMsg(err, section);
+  	const main = document.querySelector('main');
+  	const errorBox = buildErrorMsg(err, main);
 
   	//Add reload function
   	errorBox.addEventListener('click', () => location.reload());
@@ -367,8 +380,6 @@
 
   var recommendations = () => {
   	const main = document.createElement('main');
-  	const section = document.createElement('section');
-  	main.appendChild(section);
 
   	const user = getStoredData('user');
   	const genrePriorities = genre(user);
@@ -383,7 +394,11 @@
 
   	Promise.all(fetches)
   		.then(fetchResults => {
-  			fetchResults.forEach(data => {
+  			fetchResults.forEach((data, i) => {
+  				const section = document.createElement('section');
+  				main.appendChild(section);
+
+  				buildSeperator(genrePriorities[i], section);
   				const cleanData$1 = cleanData(data.results);
   				buildCard(cleanData$1, section);
   			});

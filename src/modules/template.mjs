@@ -1,5 +1,6 @@
 import card from 'templates/card.mjs';
 import errorMsg from 'templates/errorMsg.mjs'
+import seperator from 'templates/seperator.mjs'
 
 export function buildCard(data, target) {
     data.forEach(item => {
@@ -10,4 +11,8 @@ export function buildCard(data, target) {
 export function buildErrorMsg(err, target) {
     target.insertAdjacentHTML('beforebegin', errorMsg(err))
     return document.querySelector('main > div:first-of-type')
+}
+
+export function buildSeperator(subject, target) {
+    target.insertAdjacentHTML('beforeend', seperator(subject))
 }
