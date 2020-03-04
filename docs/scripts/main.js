@@ -246,10 +246,25 @@
   	return getStoredData() ? true : false
   }
 
-  function makeApiUrl(user) {
+  function genre(user) {
+  	if (user.genres.length === 0) {
+  		const goodDefaultSubjects = ['historische romans', 'sprookjes', 'romantische verhalen', 'oorlog', 'verhalenbundel'];
+  		const randomNum = Math.floor(Math.random() * 5);
+  		return [goodDefaultSubjects[randomNum]]
+  	} else {
+  		const numberOfBooks = user.genres.reduce((acc, item) => acc + item[1], 0);
+  		const treshold = (numberOfBooks > 5) ? 0.2 : 0;
+  		const importantGenres = [];
+
+  		user.genres.forEach(genre => (genre[1] / numberOfBooks >= treshold) ? importantGenres.push(genre[0]) : false);
+  		return importantGenres
+  	}
+  }
+
+  function makeApiUrl(subject) {
   	const cors = 'https://cors-anywhere.herokuapp.com/';
   	const endpoint = 'https://zoeken.oba.nl/api/v1/search/?q=';
-  	const query = 'tolkien';
+  	const query = subject;
   	const key = "ffbc1ededa6f23371bc40df1864843be";
   	const url = `${cors}${endpoint}${query}&authorization=${key}&detaillevel=Default&output=json`;
   	return url;
@@ -290,30 +305,116 @@
   function get(url, init) {
   	return fetch(url, init)
   		.then(checkStatus)
-  		.then(parseJSON);
+  		.then(parseJSON)
+  }
+
+  function cleanData(data) {
+  	return data.map(item => {
+  		return {
+  			title: item.titles[0],
+  			author: item.authors[0],
+  			summary: item.summaries ? item.summaries[0] : 'Geen samenvatting',
+  			format: item.formats[0].text,
+  			year: parseInt(item.year),
+  			detailLink: item.detailLink
+  		}
+  	});
+  }
+
+  var card = (data) => {
+  	return `
+	<a href="${data.detailLink}" target="_blank">
+		<article class="card">
+			<h4>${data.title}</h4>
+			<p>${data.author}</p>
+			<p>${data.summary}</p>
+		</article>
+	</a>
+	`;
+  };
+
+  var errorMsg = (err) => {
+  	return `
+	<div class="error">
+		<h4>Oops, er is iets misgegaan</h4>
+		<p>We konden uw aanbevelingen niet voor u ophalen uit de OBA database!</p>
+		<p>Klik op dit bericht om opnieuw te proberen. Als dat niet werkt kunt u het later nog een keer proberen.</p>
+		<i>${err}</i>
+	</div>
+	`;
+  };
+
+  var seperator = (subject) => {
+  	const user = getStoredData('user');
+
+  	return `
+	<div class="seperator">
+		<h2>${subject}</h2>
+		<p>${user.genres.length === 0 ? 'Random categorie opgehaald' : 'Gebaseerd op uw leengeschiedenis'}</p>
+	</div>
+	`;
+  };
+
+  function buildCard(data, target) {
+      data.forEach(item => target.insertAdjacentHTML('beforeend', card(item)));
+  }
+
+  function buildErrorMsg(err, target) {
+      target.insertAdjacentHTML('beforebegin', errorMsg(err));
+      return document.querySelector('main > div:first-of-type')
+  }
+
+  function buildSeperator(subject, target) {
+      target.insertAdjacentHTML('beforeend', seperator(subject));
+      return document.querySelector('main > section:last-of-type > div:first-of-type')
+  }
+
+  function handleFetchError(err) {
+  	console.error('Error while fetching ', err);
+
+  	const main = document.querySelector('main');
+  	const errorBox = buildErrorMsg(err, main);
+
+  	//Add reload function
+  	errorBox.addEventListener('click', () => location.reload());
   }
 
   var recommendations = () => {
   	const main = document.createElement('main');
-  	const section = document.createElement('section');
-  	main.appendChild(section);
-  	console.log('Recommendations page');
 
   	const user = getStoredData('user');
-  	const url = makeApiUrl();
-  	const config = {
-  		Authorization: `Bearer 3374c8bacbdd81eef70e7bb33d451efd`
-  	};
-  	get(url, config)
-  		.then(data => console.log(data.results));
+  	const genrePriorities = genre(user);
 
+  	const fetches = genrePriorities.map(subject => {
+  		const url = makeApiUrl(subject);
+  		const config = {
+  			Authorization: `Bearer 3374c8bacbdd81eef70e7bb33d451efd`
+  		};
+  		return get(url, config)
+  	});
 
+  	Promise.all(fetches)
+  		.then(fetchResults => {
+  			fetchResults.forEach((data, i) => {
+  				const section = document.createElement('section');
+  				main.appendChild(section);
 
+  				const seperator = buildSeperator(genrePriorities[i], section);
+  				seperator.addEventListener('click', () => toggleContent(seperator));
 
-
+  				const cleanData$1 = cleanData(data.results);
+  				buildCard(cleanData$1, section);
+  			});
+  		})
+  		.catch(err => handleFetchError(err));
 
   	return main;
   };
+
+  function toggleContent(el) {
+  	const container = el.parentElement;
+  	container.classList.toggle('hidden');
+  }
 
   var profile = () => {
   	const main = document.createElement('main');
@@ -328,6 +429,7 @@
   	return main;
   };
 
+<<<<<<< ours
   const welcome =
   	`<h3>Welkom</h3>
 	<p>OBA jouw boek geeft aanbevelingen voor boeken op basis van data die de OBA over jou heeft. Welke data daarvoor gebruikt wordt mag jij bepalen.</p>
@@ -520,6 +622,8 @@
   		routie('setup');
   	}}
 
+=======
+>>>>>>> theirs
   function recommendationsPage() {
   	removeOldPage();
   	const body = document.body;
@@ -542,6 +646,62 @@
 
   	const main = document.querySelector('main');
   	main.remove();
+  }
+
+  function setEmptyUser() {
+  	// const emptyUser = {
+  	// 	userID: 83913,
+  	// 	age: null,
+  	// 	city: null,
+  	// 	postalCode: null,
+  	// 	gender: null,
+  	// 	genres: [],
+  	// 	obaLocation: [],
+  	// 	mediaType: [],
+  	// 	loanCategory: []
+  	// };
+
+  	const emptyUser = {
+  		"userID": 83913,
+  		"age": 43,
+  		"city": "Amsterdam",
+  		"postalCode": "1022",
+  		"gender": "female",
+  		"genres": [
+  			["psychologische roman", 1],
+  			["thriller", 3],
+  			["biografie", 4],
+  			["stripverhaal", 2],
+  			["detectiveroman", 4]
+  		],
+  		"obaLocation": [
+  			["CEN", 10],
+  			["BVD", 4]
+  		],
+  		"mediaType": [
+  			["NF", 7],
+  			["JROM", 2],
+  			["ROM", 1],
+  			["DVDSPM", 4]
+  		],
+  		"loanCategory": [
+  			["VOLWS", 14]
+  		]
+  	};
+
+  	if (!checkLocalStorage()) storeData('user', emptyUser);
+  }
+
+  routie({
+  	'': init,
+  	'profile': profilePage,
+  	'recommendations': recommendationsPage
+  });
+
+
+  function init() {
+  	setEmptyUser();
+  	routie('profile');
   }
 
 })));

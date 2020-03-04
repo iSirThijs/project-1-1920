@@ -33,5 +33,5 @@ const parseJSON = res => res.json();
 export default function get(url, init) {
 	return fetch(url, init)
 		.then(checkStatus)
-		.then(parseJSON);
+		.then(parseJSON)
 }

@@ -27,6 +27,10 @@ body {
     background-color: var(--primary-background-color);
 }
 
+:focus {
+    outline: none
+}
+
 
 
 /* Navigation */
@@ -69,7 +73,6 @@ header nav ul li:last-of-type {
 }
 
 header nav ul li a {
-    text-decoration: none;
     color: var(--text-color);
     opacity: 0.5;
 }
@@ -95,9 +98,19 @@ main {
     max-width: 1200px;
     width: 100vw;
     margin: 0 auto;
+}
+
+main section {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+}
+
+h2 {
+    font-family: "avenirBlack", Arial, Helvetica, sans-serif;
+    font-size: 50px;
+    margin: 0;
+    color: var(--primary-color);
 }
 
 h4 {
@@ -110,37 +123,124 @@ h4 {
 p {
     margin: 0;
     color: var(--text-color);
+    font-size: 16px;
 }
 
-
+a {
+    text-decoration: none;
+}
 
 
 /* Card */
 
-article {
+.card {
     background-color: var(--secondary-background-color);
-    max-width: 350px;
-    min-width: 300px;
+    width: 325px;
     padding: 20px;
     margin: 15px;
+    height: calc(100% - 30px);
     box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.102);
     border-bottom: 4px solid var(--secondary-background-color);
     cursor: pointer;
 }
 
-article:hover {
+.card:hover {
     border-bottom: 4px solid var(--primary-color);
 }
 
-article h4 {
+.card h4 {
     margin-bottom: 5px;
     line-height: 1;
+    word-wrap: break-word;
+    hyphens: auto;
 }
 
-article p:first-of-type {
+.card p:first-of-type {
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.card p:last-of-type {
+    font-weight: bolder;
+}
+
+
+
+/* Seperator */
+
+.seperator {
+    display: block;
+    background-color: var(--secondary-background-color);
+    border-top: 6px solid var(--primary-color);
+    border-bottom: 6px solid var(--primary-color);
+    width: 100vw;
+    text-align: center;
+    padding: 15px 0;
+    margin: 10px 0 10px 0;
+    cursor: pointer;
+}
+
+
+section:not(:first-of-type) .seperator {
+    margin-top: 100px;
+}
+
+
+
+/* Toggle cards content */
+
+section.hidden+section .seperator {
+    margin-top: 20px;
+}
+
+section.hidden .seperator {
+    padding-bottom: 5px;
+}
+
+section.hidden .seperator p,
+section.hidden a {
+    position: absolute;
+    left: -9999px;
+}
+
+
+
+/* Error */
+
+.error {
+    background-color: var(--secondary-background-color);
+    border-bottom: 6px solid var(--background-highlight-color);
+    max-width: 600px;
+    margin: 0 auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    padding: 15px;
+    cursor: pointer;
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.102);
+}
+
+.error:hover {
+    border-bottom: 6px solid var(--primary-color);
+}
+
+.error h4 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.error p:first-of-type {
     margin-bottom: 5px;
 }
 
-article p:last-of-type {
-    font-weight: bolder;
+.error p:last-of-type {
+    margin-bottom: 15px;
+}
+
+.error i {
+    font-size: 14px;
+    display: block;
+    margin-bottom: 10px;
 }
