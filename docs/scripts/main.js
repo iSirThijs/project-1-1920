@@ -222,39 +222,6 @@
     module.exports = Routie(window,true);
   }
 
-  function storeData(name, item) {
-  	localStorage.setItem(name, JSON.stringify(item));
-  }
-
-  /**
-   * saves an value into local storage
-   * @export
-   * @param {*} item - the value to save into localstorage
-   * @returns
-   */
-  function getStoredData(item) {
-  	return JSON.parse(localStorage.getItem(item));
-  }
-
-  /**
-   * check if there is data in local storage
-   * @export
-   * @param {String} - the item to check
-   * @returns {boolean}
-   */
-  function checkLocalStorage(item) {
-  	return getStoredData() ? true : false
-  }
-
-  function makeApiUrl(user) {
-  	const cors = 'https://cors-anywhere.herokuapp.com/';
-  	const endpoint = 'https://zoeken.oba.nl/api/v1/search/?q=';
-  	const query = 'tolkien';
-  	const key = "ffbc1ededa6f23371bc40df1864843be";
-  	const url = `${cors}${endpoint}${query}&authorization=${key}&detaillevel=Default&output=json`;
-  	return url;
-  }
-
   /* 
    * Module to append fetch with some additional modules
    * based on https://codeburst.io/fetch-api-was-bringing-darkness-to-my-codebase-so-i-did-something-to-illuminate-it-7f2d8826e939
@@ -266,6 +233,7 @@
    * @returns {Promise<*>} if response is ok, resolves with the response. Else rejects with an error
    */
   const checkStatus = response => {
+  	console.log(response);
   	if (response.ok) return response;
   	else {
   		const error = new Error(response.statusText || response.status);
@@ -288,28 +256,81 @@
    * @returns {Promise<*>} The resolved JSON parsed response if 200 Ok or rejection with the error reason
    */
   function get(url, init) {
+  	console.log(url, init);
   	return fetch(url, init)
   		.then(checkStatus)
-  		.then(parseJSON);
+  		.then(parseJSON)
+  		.catch(error=>console.log(error));
   }
 
-  var recommendations = () => {
+  const baseURL = 'https://oba-jwt.herokuapp.com';
+
+  function getJWT(key){
+  	console.log(key);
+  	const endpoint = '/jwt?key=';
+  	const url = `${baseURL}${endpoint}${key}`;
+  	const headers = new Headers();
+  	headers.append('Accept', 'application/json');
+  	const config = {
+  		headers
+  	};
+
+  	console.log(headers.get('Accept'));
+
+  	return get(url, config);
+  }
+
+  function storeData(name, item) {
+  	localStorage.setItem(name, JSON.stringify(item));
+  }
+
+  /**
+   * saves an value into local storage
+   * @export
+   * @param {*} item - the value to save into localstorage
+   * @returns
+   */
+  function getStoredData(item) {
+  	return JSON.parse(localStorage.getItem(item));
+  }
+
+  /**
+   * check if there is data in local storage
+   * @export
+   * @param {String} - the item to check
+   * @returns {boolean}
+   */
+  function checkLocalStorage(item) {
+  	return getStoredData() ? true : false;
+  }
+
+
+  async function getStoredJWT(){
+  	const key = 'f60b69054b02f50180d9c088e06270ea';
+  	let token = getStoredData('jwt');
+
+  	console.log(token);
+  	
+  	if (!token || (token && checkExpiration(token.exp))) {
+  		token = await getJWT(key);
+  		console.log(token);
+  		storeData('jwt', token);
+  	} else {
+  		return token.jwt;
+  	}
+  }
+
+  function checkExpiration(exp){
+  	const now = Date.now() / 1000;
+  	console.log(`now ${now}`, `exp: ${exp}`);
+  	return now < exp;
+  }
+
+  var recommendations = async () => {
   	const main = document.createElement('main');
   	const section = document.createElement('section');
   	main.appendChild(section);
   	console.log('Recommendations page');
-
-  	const user = getStoredData('user');
-  	const url = makeApiUrl();
-  	const config = {
-  		Authorization: `Bearer 3374c8bacbdd81eef70e7bb33d451efd`
-  	};
-  	get(url, config)
-  		.then(data => console.log(data.results));
-
-
-
-
 
 
   	return main;
@@ -354,6 +375,8 @@
   function init(){
   	setEmptyUser();
   	routie('profile');
+  	getStoredJWT().then(jwt => console.log(jwt) );
+  	
   }
 
   function recommendationsPage() {

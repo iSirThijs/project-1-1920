@@ -9,6 +9,7 @@
  * @returns {Promise<*>} if response is ok, resolves with the response. Else rejects with an error
  */
 const checkStatus = response => {
+	console.log(response);
 	if (response.ok) return response;
 	else {
 		const error = new Error(response.statusText || response.status);
@@ -31,7 +32,9 @@ const parseJSON = res => res.json();
  * @returns {Promise<*>} The resolved JSON parsed response if 200 Ok or rejection with the error reason
  */
 export default function get(url, init) {
+	console.log(url, init);
 	return fetch(url, init)
 		.then(checkStatus)
-		.then(parseJSON);
+		.then(parseJSON)
+		.catch(error=>console.log(error));
 }

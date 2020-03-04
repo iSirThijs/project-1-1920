@@ -2,6 +2,7 @@ import 'modules/routie.js';
 import recommendations from 'pages/recommendations.mjs';
 import profile from 'pages/profile.mjs';
 import { setEmptyUser } from 'modules/user.mjs';
+import { getStoredJWT } from 'modules/localStorageHelper.mjs';
 
 routie({
 	'': init,
@@ -13,6 +14,8 @@ routie({
 function init(){
 	setEmptyUser();
 	routie('profile');
+	getStoredJWT().then(jwt => console.log(jwt) );
+	
 }
 
 function recommendationsPage() {
