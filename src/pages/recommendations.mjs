@@ -4,7 +4,8 @@ import {
 import apiUrlMaker from 'modules/apiUrlMaker.mjs'
 import fetcher from 'modules/fetcher.mjs'
 import cleaner from 'modules/cleaner.mjs'
-import template from 'modules/template.mjs'
+import * as template from 'modules/template.mjs'
+import error from 'modules/error.mjs'
 
 export default () => {
 	const main = document.createElement('main');
@@ -18,8 +19,8 @@ export default () => {
 	};
 	fetcher(url, config)
 		.then(data => cleaner(data.results))
-		.then(cleanData => template(cleanData, section))
-		.catch(err => console.log(err))
+		.then(cleanData => template.buildCard(cleanData, section))
+		.catch(err => error(err))
 
 	return main;
 };

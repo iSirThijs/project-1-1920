@@ -290,7 +290,7 @@
   function get(url, init) {
   	return fetch(url, init)
   		.then(checkStatus)
-  		.then(parseJSON);
+  		.then(parseJSON)
   }
 
   function cleanData(data) {
@@ -318,10 +318,36 @@
 	`;
   };
 
+  var errorMsg = (err) => {
+  	return `
+	<div id="error">
+		<h4>Oops, er is iets misgegaan</h4>
+		<p>We konden uw aanbevelingen niet voor u ophalen uit de OBA database!</p>
+		<p>Klik op dit bericht om opnieuw te proberen. Als dat niet werkt kunt u het later nog een keer proberen.</p>
+		<i>${err}</i>
+	</div>
+	`;
+  };
+
   function buildCard(data, target) {
       data.forEach(item => {
           target.insertAdjacentHTML('beforeend', card(item));
       });
+  }
+
+  function buildErrorMsg(err, target) {
+      target.insertAdjacentHTML('beforebegin', errorMsg(err));
+      return document.querySelector('main > div:first-of-type')
+  }
+
+  function handleFetchError(err) {
+  	console.error('Error while fetching ', err);
+
+  	const section = document.querySelector('main section');
+  	const errorBox = buildErrorMsg(err, section);
+
+  	//Add reload function
+  	errorBox.addEventListener('click', () => location.reload());
   }
 
   var recommendations = () => {
@@ -337,7 +363,7 @@
   	get(url, config)
   		.then(data => cleanData(data.results))
   		.then(cleanData => buildCard(cleanData, section))
-  		.catch(err => console.log(err));
+  		.catch(err => handleFetchError(err));
 
   	return main;
   };
