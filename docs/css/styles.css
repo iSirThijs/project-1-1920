@@ -170,7 +170,7 @@ a {
 
 .seperator {
     display: block;
-    background-color: var(--secondary-background-color);
+    background-image: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 5%, rgba(255, 255, 255, 1) 95%, rgba(255, 255, 255, 0) 100%);
     border-top: 6px solid var(--primary-color);
     border-bottom: 6px solid var(--primary-color);
     width: 100vw;
