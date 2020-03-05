@@ -360,23 +360,9 @@
   	const user = getStoredData('user');
 
   	return `
-	<div class="seperator">
+	<div class="seperator" filterGenre="${subject}">
 		<h2>${subject}</h2>
 		<p>${user.genres.length === 0 ? 'Random categorie opgehaald' : 'Gebaseerd op uw leengeschiedenis'}</p>
-	</div>
-	`;
-  };
-
-  var sortMenu = () => {
-  	return `
-	<div class="sortMenu">
-		<h6>Sorteer</h6>
-		<form>
-			<input type="radio" name="sort" id="new" value="new" checked>
-			<label for="new">Nieuw eerst</label>
-			<input type="radio" name="sort" id="old" value="old" >
-			<label for="old">Oud eerst</label>
-		</form>
 	</div>
 	`;
   };
@@ -416,11 +402,6 @@
       return document.querySelector('main > section:last-of-type > div:first-of-type')
   }
 
-  function buildSortMenu(target) {
-      target.insertAdjacentHTML('afterbegin', sortMenu());
-      return document.querySelector('aside > div.sortMenu')
-  }
-
   function buildFilterMenu(target) {
       target.insertAdjacentHTML('beforeend', filterMenu());
   }
@@ -444,15 +425,11 @@
   	container.classList.toggle('hidden');
   }
 
-  function sortContent(e) {
-  	console.log('sort the content', e.target.value);
-  }
-
   function filterContent(e) {
   	const filter = e.target.value;
 
-  	console.log('filter the content', filter);
-
+  	const targetedSection = document.querySelector(`[filterGenre="${filter}"]`);
+  	targetedSection.parentElement.classList.toggle('filtered');
   }
 
   var recommendations = () => {
@@ -501,12 +478,14 @@
   	const aside = document.createElement('aside');
   	main.prepend(aside);
 
-  	buildSortMenu(aside);
-  	aside.querySelectorAll('.sortMenu input').forEach(label => label.addEventListener('change', e => sortContent(e)));
-
   	buildFilterMenu(aside);
   	const sections = document.querySelectorAll('section');
   	sections.forEach(section => buildFilterOption(section, aside.querySelector('.filterMenu form')));
+
+  	const filterMenu = document.querySelector('.filterMenu');
+  	const filterButtons = document.querySelectorAll('.filterMenu form label');
+  	if (filterButtons.length < 2) filterMenu.classList.add('hidden');
+  	else filterMenu.classList.remove('hidden');
 
   	aside.querySelectorAll('.filterMenu input').forEach(label => label.addEventListener('change', e => filterContent(e)));
   }

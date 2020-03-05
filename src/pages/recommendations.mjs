@@ -58,12 +58,14 @@ function buildInteractionMenu(main) {
 	const aside = document.createElement('aside')
 	main.prepend(aside)
 
-	template.buildSortMenu(aside)
-	aside.querySelectorAll('.sortMenu input').forEach(label => label.addEventListener('change', e => interaction.sortContent(e)))
-
 	template.buildFilterMenu(aside)
 	const sections = document.querySelectorAll('section')
 	sections.forEach(section => template.buildFilterOption(section, aside.querySelector('.filterMenu form')))
+
+	const filterMenu = document.querySelector('.filterMenu')
+	const filterButtons = document.querySelectorAll('.filterMenu form label')
+	if (filterButtons.length < 2) filterMenu.classList.add('hidden')
+	else filterMenu.classList.remove('hidden')
 
 	aside.querySelectorAll('.filterMenu input').forEach(label => label.addEventListener('change', e => interaction.filterContent(e)))
 }
