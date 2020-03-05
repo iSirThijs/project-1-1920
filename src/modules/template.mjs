@@ -4,6 +4,7 @@ import errorMsg from 'templates/errorMsg.mjs'
 import seperator from 'templates/seperator.mjs'
 import sortMenu from 'templates/sortMenu.mjs'
 import filterMenu from 'templates/filterMenu.mjs'
+import filterOption from 'templates/filterOption.mjs'
 
 export function buildCard(data, target) {
     data.forEach(item => target.insertAdjacentHTML('beforeend', card(item)))
@@ -30,5 +31,8 @@ export function buildSortMenu(target) {
 
 export function buildFilterMenu(target) {
     target.insertAdjacentHTML('beforeend', filterMenu())
-    return document.querySelector('aside > div.filterMenu')
+}
+
+export function buildFilterOption(section, target) {
+    target.insertAdjacentHTML('beforeend', filterOption(section))
 }

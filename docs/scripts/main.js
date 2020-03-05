@@ -350,7 +350,7 @@
 	<div class="error">
 		<h4>Oops, er is iets misgegaan</h4>
 		<p>We konden uw aanbevelingen niet voor u ophalen uit de OBA database!</p>
-		<p>Klik op dit bericht om opnieuw te proberen. Als dat niet werkt kunt u het later nog een keer proberen.</p>
+		<p>Refresh de pagina om opnieuw te proberen. Als dat niet werkt kunt u het later nog een keer proberen.</p>
 		<i>${err}</i>
 	</div>
 	`;
@@ -385,13 +385,16 @@
   	return `
 	<div class="filterMenu">
 		<h6>Filter</h6>
-		<form>
-			<input type="radio" name="sort" id="bbb" value="bbb" checked>
-			<label for="bbb">Nieuw eerst</label>
-			<input type="radio" name="sort" id="aaa" value="aaa" >
-			<label for="aaa">Oud eerst</label>
-		</form>
+		<form></form>
 	</div>
+	`;
+  };
+
+  var filterOption = (section) => {
+  	const genre = section.querySelector('.seperator h2').textContent;
+  	return `
+	<input type="checkbox" id="filterOption${genre}" value="${genre}" checked>
+	<label for="filterOption${genre}">${genre}</label>
 	`;
   };
 
@@ -420,17 +423,20 @@
 
   function buildFilterMenu(target) {
       target.insertAdjacentHTML('beforeend', filterMenu());
-      return document.querySelector('aside > div.filterMenu')
+  }
+
+  function buildFilterOption(section, target) {
+      target.insertAdjacentHTML('beforeend', filterOption(section));
   }
 
   function handleFetchError(err) {
   	console.error('Error while fetching ', err);
 
-  	const main = document.querySelector('main');
-  	const errorBox = buildErrorMsg(err, main);
+  	const loadingState = document.querySelector('main > div.loading');
+  	removeEl(loadingState);
 
-  	//Add reload function
-  	errorBox.addEventListener('click', () => location.reload());
+  	const main = document.querySelector('main');
+  	buildErrorMsg(err, main);
   }
 
   function toggleContent(el) {
@@ -438,12 +444,15 @@
   	container.classList.toggle('hidden');
   }
 
-  function sortContent() {
-  	console.log('sort the content');
+  function sortContent(e) {
+  	console.log('sort the content', e.target.value);
   }
 
-  function filterContent() {
-  	console.log('filter the content');
+  function filterContent(e) {
+  	const filter = e.target.value;
+
+  	console.log('filter the content', filter);
+
   }
 
   var recommendations = () => {
@@ -492,10 +501,13 @@
   	main.prepend(aside);
 
   	buildSortMenu(aside);
-  	aside.querySelectorAll('.sortMenu input').forEach(label => label.addEventListener('change', () => sortContent()));
+  	aside.querySelectorAll('.sortMenu input').forEach(label => label.addEventListener('change', e => sortContent(e)));
 
   	buildFilterMenu(aside);
-  	aside.querySelectorAll('.filterMenu input').forEach(label => label.addEventListener('change', () => filterContent()));
+  	const sections = document.querySelectorAll('section');
+  	sections.forEach(section => buildFilterOption(section, aside.querySelector('.filterMenu form')));
+
+  	aside.querySelectorAll('.filterMenu input').forEach(label => label.addEventListener('change', e => filterContent(e)));
   }
 
   var profile = () => {

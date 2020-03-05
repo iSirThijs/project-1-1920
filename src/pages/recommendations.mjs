@@ -58,8 +58,11 @@ function buildInteractionMenu(main) {
 	main.prepend(aside)
 
 	template.buildSortMenu(aside)
-	aside.querySelectorAll('.sortMenu input').forEach(label => label.addEventListener('change', () => interaction.sortContent()))
+	aside.querySelectorAll('.sortMenu input').forEach(label => label.addEventListener('change', e => interaction.sortContent(e)))
 
 	template.buildFilterMenu(aside)
-	aside.querySelectorAll('.filterMenu input').forEach(label => label.addEventListener('change', () => interaction.filterContent()))
+	const sections = document.querySelectorAll('section')
+	sections.forEach(section => template.buildFilterOption(section, aside.querySelector('.filterMenu form')))
+
+	aside.querySelectorAll('.filterMenu input').forEach(label => label.addEventListener('change', e => interaction.filterContent(e)))
 }
