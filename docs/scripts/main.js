@@ -385,29 +385,29 @@
   };
 
   function buildCard(data, target) {
-      data.forEach(item => target.insertAdjacentHTML('beforeend', card(item)));
+  	data.forEach(item => target.insertAdjacentHTML('beforeend', card(item)));
   }
 
   function buildLoadingState(target) {
-      target.insertAdjacentHTML('beforeend', loadingState());
+  	target.insertAdjacentHTML('beforeend', loadingState());
   }
 
   function buildErrorMsg(err, target) {
-      target.insertAdjacentHTML('beforebegin', errorMsg(err));
-      return document.querySelector('main > div:first-of-type')
+  	target.insertAdjacentHTML('beforebegin', errorMsg(err));
+  	return document.querySelector('main > div:first-of-type');
   }
 
   function buildSeperator(subject, target) {
-      target.insertAdjacentHTML('beforeend', seperator(subject));
-      return document.querySelector('main > section:last-of-type > div:first-of-type')
+  	target.insertAdjacentHTML('beforeend', seperator(subject));
+  	return document.querySelector('main > section:last-of-type > div:first-of-type');
   }
 
   function buildFilterMenu(target) {
-      target.insertAdjacentHTML('beforeend', filterMenu());
+  	target.insertAdjacentHTML('beforeend', filterMenu());
   }
 
   function buildFilterOption(section, target) {
-      target.insertAdjacentHTML('beforeend', filterOption(section));
+  	target.insertAdjacentHTML('beforeend', filterOption(section));
   }
 
   function handleFetchError(err) {

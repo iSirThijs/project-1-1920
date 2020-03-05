@@ -362,6 +362,7 @@ section.hidden+section .seperator {
 
 .recommendations section.hidden .seperator p,
 .recommendations section.hidden a,
+.recommendations section.filtered,
 .filterMenu.hidden {
     position: absolute;
     left: -9999px;
