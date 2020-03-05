@@ -2,6 +2,8 @@ import card from 'templates/card.mjs';
 import loadingState from 'templates/loadingState.mjs'
 import errorMsg from 'templates/errorMsg.mjs'
 import seperator from 'templates/seperator.mjs'
+import sortMenu from 'templates/sortMenu.mjs'
+import filterMenu from 'templates/filterMenu.mjs'
 
 export function buildCard(data, target) {
     data.forEach(item => target.insertAdjacentHTML('beforeend', card(item)))
@@ -19,4 +21,14 @@ export function buildErrorMsg(err, target) {
 export function buildSeperator(subject, target) {
     target.insertAdjacentHTML('beforeend', seperator(subject))
     return document.querySelector('main > section:last-of-type > div:first-of-type')
+}
+
+export function buildSortMenu(target) {
+    target.insertAdjacentHTML('afterbegin', sortMenu())
+    return document.querySelector('aside > div.sortMenu')
+}
+
+export function buildFilterMenu(target) {
+    target.insertAdjacentHTML('beforeend', filterMenu())
+    return document.querySelector('aside > div.filterMenu')
 }
