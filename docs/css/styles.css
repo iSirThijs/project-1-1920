@@ -339,10 +339,7 @@ input[type=radio]:checked+label {
     text-align: center;
     padding: 15px 0;
     cursor: pointer;
-}
-
-.recommendations section:not(:first-of-type) .seperator {
-    margin-top: 100px;
+    margin: 50px 0;
 }
 
 .recommendations section.hidden+section .seperator {
