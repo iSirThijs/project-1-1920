@@ -8,12 +8,18 @@ import cleaner from 'modules/cleaner.mjs'
 import * as template from 'modules/template.mjs'
 import error from 'modules/error.mjs'
 import * as interaction from 'modules/interactions.mjs'
+import {
+	removeEl
+} from 'modules/router.mjs'
 
 export default () => {
 	const main = document.createElement('main');
 
 	const user = getStoredData('user')
 	const genrePriorities = priorities.genre(user)
+
+	template.buildLoadingState(main)
+	const loadingState = main.querySelector('div')
 
 	const fetches = genrePriorities.map(subject => {
 		const url = apiUrlMaker(subject)
@@ -36,6 +42,7 @@ export default () => {
 				template.buildCard(cleanData, section)
 			});
 		})
+		.then(() => removeEl(loadingState))
 		.catch(err => error(err))
 
 	return main;

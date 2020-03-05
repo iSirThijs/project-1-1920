@@ -1,4 +1,4 @@
-export  const welcome =
+export const welcome =
 	`<h3>Welkom</h3>
 	<p>OBA jouw boek geeft aanbevelingen voor boeken op basis van data die de OBA over jou heeft. Welke data daarvoor gebruikt wordt mag jij bepalen.</p>
 	`;

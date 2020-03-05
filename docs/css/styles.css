@@ -244,3 +244,79 @@ section.hidden a {
     display: block;
     margin-bottom: 10px;
 }
+
+
+
+/* Loading state 
+(credits to https://codepen.io/gruelas/pen/qBEZPxJ?editors=0100 for the animation we used as a basis) */
+
+.loading p,
+.loading h2 {
+    position: absolute;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+}
+
+.loading h2 {
+    top: calc(50% - 180px);
+}
+
+.loading p {
+    top: calc(50% + 150px);
+}
+
+.loading div {
+    margin: 5% auto 30px;
+    border: 6px solid var(--primary-color);
+    width: 240px;
+    height: 180px;
+    position: relative;
+    perspective: 600px;
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+}
+
+.loading figure {
+    display: block;
+    width: 120px;
+    height: 180px;
+    border: 6px solid var(--primary-color);
+    border-left: 2px solid var(--primary-color);
+    margin: 0;
+    position: absolute;
+    right: -6px;
+    top: -6px;
+    overflow: hidden;
+    background: var(--primary-background-color);
+    transform-style: preserve-3d;
+    transform-origin: left center;
+}
+
+.loading figure {
+    animation: pageTurn 1000ms cubic-bezier(0, .39, 1, .68) 0ms infinite;
+}
+
+
+@keyframes pageTurn {
+    0% {
+        transform: rotateY(0deg);
+    }
+
+    20% {
+        background: rgba(255, 255, 255, 0.9);
+    }
+
+    40% {
+        background: var(--primary-background-color);
+        transform: rotateY(-180deg);
+    }
+
+    100% {
+        background: var(--primary-background-color);
+        transform: rotateY(-180deg);
+    }
+}

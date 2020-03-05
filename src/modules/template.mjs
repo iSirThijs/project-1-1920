@@ -1,9 +1,14 @@
 import card from 'templates/card.mjs';
+import loadingState from 'templates/loadingState.mjs'
 import errorMsg from 'templates/errorMsg.mjs'
 import seperator from 'templates/seperator.mjs'
 
 export function buildCard(data, target) {
     data.forEach(item => target.insertAdjacentHTML('beforeend', card(item)))
+}
+
+export function buildLoadingState(target) {
+    target.insertAdjacentHTML('beforeend', loadingState())
 }
 
 export function buildErrorMsg(err, target) {

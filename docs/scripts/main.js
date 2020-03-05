@@ -333,6 +333,18 @@
 	`;
   };
 
+  var loadingState = () => {
+  	return `
+	<div class="loading">
+	<h2>Uw aanbevelingen worden geladen!</h2>
+	<div>
+		<figure></figure>
+	</div>
+	<p>Dit kan enkele momenten duren.</p>
+	</div>
+	`;
+  };
+
   var errorMsg = (err) => {
   	return `
 	<div class="error">
@@ -357,6 +369,10 @@
 
   function buildCard(data, target) {
       data.forEach(item => target.insertAdjacentHTML('beforeend', card(item)));
+  }
+
+  function buildLoadingState(target) {
+      target.insertAdjacentHTML('beforeend', loadingState());
   }
 
   function buildErrorMsg(err, target) {
@@ -390,6 +406,9 @@
   	const user = getStoredData('user');
   	const genrePriorities = genre(user);
 
+  	buildLoadingState(main);
+  	const loadingState = main.querySelector('div');
+
   	const fetches = genrePriorities.map(subject => {
   		const url = makeApiUrl(subject);
   		const config = {
@@ -411,6 +430,7 @@
   				buildCard(cleanData$1, section);
   			});
   		})
+  		.then(() => removeEl(loadingState))
   		.catch(err => handleFetchError(err));
 
   	return main;
@@ -603,24 +623,23 @@
   }
 
   function recommendationsPage() {
-  	removeOldPage();
+  	removeEl(document.querySelector('main'));
   	const body = document.body;
   	body.appendChild(recommendations());
   }
 
   function profilePage() {
-  	removeOldPage();
+  	removeEl(document.querySelector('main'));
   	const body = document.body;
   	body.appendChild(profile());
   }
 
-  function removeOldPage() {
-  	const main = document.querySelector('main');
-  	main.remove();
+  function removeEl(target) {
+  	target.remove();
   }
 
   function setupPage(step) {
-  	removeOldPage();
+  	removeEl(document.querySelector('main'));
   	const body = document.body;
   	body.appendChild(setup(step));
   }
