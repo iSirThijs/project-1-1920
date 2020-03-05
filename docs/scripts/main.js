@@ -312,10 +312,10 @@
   	return data.map(item => {
   		return {
   			title: item.titles ? item.titles[0] : 'Geen titel',
-  			author: item.author ? item.authors[0] : 'Geen auteur',
-  			summary:item.summaries ? item.summaries : 'Geen samenvatting',
-  			format:item.formats ? item.formats[0].text : 'Geen formaat',
-  			year:item.year ? parseInt(item.year) : 'Geen jaar',
+  			author: item.authors ? item.authors[0] : 'Geen auteur',
+  			summary: item.summaries ? item.summaries : 'Geen samenvatting',
+  			format: item.formats ? item.formats[0].text : 'Geen formaat',
+  			year: item.year ? parseInt(item.year) : 'Geen jaar',
   			detailLink: item.detailLink
   		};
   	});
@@ -333,12 +333,24 @@
 	`;
   };
 
+  var loadingState = () => {
+  	return `
+	<div class="loading">
+	<h2>Uw aanbevelingen worden geladen!</h2>
+	<div>
+		<figure></figure>
+	</div>
+	<p>Dit kan enkele momenten duren.</p>
+	</div>
+	`;
+  };
+
   var errorMsg = (err) => {
   	return `
 	<div class="error">
 		<h4>Oops, er is iets misgegaan</h4>
 		<p>We konden uw aanbevelingen niet voor u ophalen uit de OBA database!</p>
-		<p>Klik op dit bericht om opnieuw te proberen. Als dat niet werkt kunt u het later nog een keer proberen.</p>
+		<p>Refresh de pagina om opnieuw te proberen. Als dat niet werkt kunt u het later nog een keer proberen.</p>
 		<i>${err}</i>
 	</div>
 	`;
@@ -348,35 +360,64 @@
   	const user = getStoredData('user');
 
   	return `
-	<div class="seperator">
+	<div class="seperator" filterGenre="${subject}">
 		<h2>${subject}</h2>
 		<p>${user.genres.length === 0 ? 'Random categorie opgehaald' : 'Gebaseerd op uw leengeschiedenis'}</p>
 	</div>
 	`;
   };
 
+  var filterMenu = () => {
+  	return `
+	<div class="filterMenu">
+		<h6>Filter</h6>
+		<form></form>
+	</div>
+	`;
+  };
+
+  var filterOption = (section) => {
+  	const genre = section.querySelector('.seperator h2').textContent;
+  	return `
+	<input type="checkbox" id="filterOption${genre}" value="${genre}" checked>
+	<label for="filterOption${genre}">${genre}</label>
+	`;
+  };
+
   function buildCard(data, target) {
-      data.forEach(item => target.insertAdjacentHTML('beforeend', card(item)));
+  	data.forEach(item => target.insertAdjacentHTML('beforeend', card(item)));
+  }
+
+  function buildLoadingState(target) {
+  	target.insertAdjacentHTML('beforeend', loadingState());
   }
 
   function buildErrorMsg(err, target) {
-      target.insertAdjacentHTML('beforebegin', errorMsg(err));
-      return document.querySelector('main > div:first-of-type')
+  	target.insertAdjacentHTML('beforebegin', errorMsg(err));
+  	return document.querySelector('main > div:first-of-type');
   }
 
   function buildSeperator(subject, target) {
-      target.insertAdjacentHTML('beforeend', seperator(subject));
-      return document.querySelector('main > section:last-of-type > div:first-of-type')
+  	target.insertAdjacentHTML('beforeend', seperator(subject));
+  	return document.querySelector('main > section:last-of-type > div:first-of-type');
+  }
+
+  function buildFilterMenu(target) {
+  	target.insertAdjacentHTML('beforeend', filterMenu());
+  }
+
+  function buildFilterOption(section, target) {
+  	target.insertAdjacentHTML('beforeend', filterOption(section));
   }
 
   function handleFetchError(err) {
   	console.error('Error while fetching ', err);
 
-  	const main = document.querySelector('main');
-  	const errorBox = buildErrorMsg(err, main);
+  	const loadingState = document.querySelector('main > div.loading');
+  	removeEl(loadingState);
 
-  	//Add reload function
-  	errorBox.addEventListener('click', () => location.reload());
+  	const main = document.querySelector('main');
+  	buildErrorMsg(err, main);
   }
 
   function toggleContent(el) {
@@ -384,11 +425,22 @@
   	container.classList.toggle('hidden');
   }
 
+  function filterContent(e) {
+  	const filter = e.target.value;
+
+  	const targetedSection = document.querySelector(`[filterGenre="${filter}"]`);
+  	targetedSection.parentElement.classList.toggle('filtered');
+  }
+
   var recommendations = () => {
   	const main = document.createElement('main');
+  	main.classList.add('recommendations');
 
   	const user = getStoredData('user');
   	const genrePriorities = genre(user);
+
+  	buildLoadingState(main);
+  	const loadingState = main.querySelector('div');
 
   	const fetches = genrePriorities.map(subject => {
   		const url = makeApiUrl(subject);
@@ -399,92 +451,57 @@
   	});
 
   	Promise.all(fetches)
-  		.then(fetchResults => {
-  			fetchResults.forEach((data, i) => {
-  				const section = document.createElement('section');
-  				main.appendChild(section);
-
-  				const seperator = buildSeperator(genrePriorities[i], section);
-  				seperator.addEventListener('click', () => toggleContent(seperator));
-
-  				const cleanData$1 = cleanData(data.results);
-  				buildCard(cleanData$1, section);
-  			});
-  		})
+  		.then(data => buildContent(data, main, genrePriorities))
+  		.then(() => removeEl(loadingState))
+  		.then(() => buildInteractionMenu(main))
   		.catch(err => handleFetchError(err));
 
   	return main;
   };
 
-  var profile = () => {
-  	const main = document.createElement('main');
-  	console.log('Profile Page');
+
+  function buildContent(data, main, genrePriorities) {
+  	data.forEach((data, i) => {
+  		const section = document.createElement('section');
+  		main.appendChild(section);
+
+  		const seperator = buildSeperator(genrePriorities[i], section);
+  		seperator.addEventListener('click', () => toggleContent(seperator));
+
+  		const cleanData$1 = cleanData(data.results);
+  		buildCard(cleanData$1, section);
+  	});
+  }
 
 
+  function buildInteractionMenu(main) {
+  	const aside = document.createElement('aside');
+  	main.prepend(aside);
 
+  	buildFilterMenu(aside);
+  	const sections = document.querySelectorAll('section');
+  	sections.forEach(section => buildFilterOption(section, aside.querySelector('.filterMenu form')));
 
+  	const filterMenu = document.querySelector('.filterMenu');
+  	const filterButtons = document.querySelectorAll('.filterMenu form label');
+  	if (filterButtons.length < 2) filterMenu.classList.add('hidden');
+  	else filterMenu.classList.remove('hidden');
 
+  	aside.querySelectorAll('.filterMenu input').forEach(label => label.addEventListener('change', e => filterContent(e)));
+  }
 
+  function elements(data){
+  	const checkboxes = data.form.map((input => {
+  		return `<input type="checkbox" id=${input[0]} name=${input[0]}></input><label for=${input[0]}>${input[1]}</label>`
+  		;
+  	}));
+  	const heading = 
+  		`<h3>${data.title}</h3>
+		<p>${data.description}</p>
+		<form>${checkboxes.join('\n')}</form>`;
 
-  	return main;
-  };
-
-  const welcome =
-  	`<h3>Welkom</h3>
-	<p>OBA jouw boek geeft aanbevelingen voor boeken op basis van data die de OBA over jou heeft. Welke data daarvoor gebruikt wordt mag jij bepalen.</p>
-	`;
-
-  const user = `
-	<h3>Persoonsgegevens</h3>
-	<p>Persoonsgegevens gaan over wie jij bent, zoals hoe oud je bent of waar je woont</p>
-	<form>
-		<input type="checkbox" id="age" name="age">
-		<label for="age">Leeftijd</label>
-		<input type="checkbox" id="city" name="city">
-		<label for="city">Woonplaats</label>
-		<input type="checkbox" id="postalCode" name="postalCode">
-		<label for="postalcode">Postcode</label>
-		<input type="checkbox" id="gender" name="gender">
-		<label for="gender">geslacht</label>
-	</form>`;
-
-  const loan = `
-	<h3>Leengeschiedenis</h3>
-	<p>Leengeschiedenis gaat over wat je bij de OBA hebt geleend, zoals het soort boek of welke auteurs je leest</p>
-	<form>
-		<input type="checkbox" id="genres" name="genres">
-		<label for="genres">Genres</label>
-		<input type="checkbox" id="obaLocation" name="obaLocation">
-		<label for="obaLocation">OBA locaties</label>
-		<input type="checkbox" id="mediaType" name="mediaType">
-		<label for="mediaType">Media type</label>
-		<input type="checkbox" id="loanCategory" name="loanCategory">
-		<label for="loanCategory">Categorie</label>
-	</form>
-	`;
-
-  // export default function(data){
-  // 	const title = `<h3>${data.title}</h3>`
-  // 	const description = `<p>${data.description}</p>'
-  // 	<form>
-  // 		<input type="checkbox" id="${id}" name="${id}">
-  // 		<label for="genres">Genres</label>
-  // 		<input type="checkbox" id="obaLocation" name="obaLocation">
-  // 		<label for="obaLocation">OBA locaties</label>
-  // 		<input type="checkbox" id="mediaType" name="mediaType">
-  // 		<label for="mediaType">Media type</label>
-  // 		<input type="checkbox" id="loanCategory" name="loanCategory">
-  // 		<label for="loanCategory">Categorie</label>
-  // 	</form>
-  // 	`;
-  // }
-
-  var step = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    welcome: welcome,
-    user: user,
-    loan: loan
-  });
+  	return heading;
+  }
 
   var fakeUserImport = fakeUser => {
   	return {
@@ -539,10 +556,89 @@
 
   }
 
+  const welcome =
+  	{
+  		title: 'Welkom bij OBA Jouw Boek',
+  		description: 'OBA jouw boek geeft aanbevelingen voor boeken op basis van data die de OBA over jou heeft. Welke data daarvoor gebruikt wordt mag jij bepalen.',
+  		form: []
+  	};
+
+  const user = 
+  	{
+  		title: 'Persoonsgegevens',
+  		description: 'Persoonsgegevens gaan over wie jij bent, zoals hoe oud je bent of waar je woont',
+  		form: [['age', 'leeftijd'], ['city', 'woonplaats'], ['postalCode', 'postcode'], ['gender', 'geslacht']]
+  	};
+
+  const loan = 
+  	{
+  		title: 'Persoonsgegevens',
+  		description: 'Persoonsgegevens gaan over wie jij bent, zoals hoe oud je bent of waar je woont',
+  		form: [['genres', 'Genres'], ['obaLocation', 'OBA locatie'], ['mediaType', 'Media Type'], ['loanCategory', 'Leen Categorie']]
+  	};
+
+  const final = 
+  	{
+  		title: 'Bedankt',
+  		description: 'Je profiel is klaar en kan nu gebruikt worden om jou aanbevelingen te doen',
+  		form: []
+  	};
+
+  var content = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    welcome: welcome,
+    user: user,
+    loan: loan,
+    final: final
+  });
+
+  var profile = () => {
+  	const user = getStoredData('user');
+  	const main = document.createElement('main');
+  	main.classList.add('profile');
+  	main.appendChild(createUserSection('user', user));
+  	main.appendChild(createUserSection('loan', user));
+
+
+
+  	return main;
+  };
+
+
+  function createUserSection(category, user) {
+
+  	const section = document.createElement('section');
+  	section.classList.add('setup-step');
+
+  	let el = elements(content[category]) ;
+  	section.insertAdjacentHTML('beforeend', el );
+
+  	const checkboxes = section.querySelectorAll('input[type="checkbox"]');
+  	// (checkboxes);
+  	checkboxes.forEach((checkbox) => {
+  		let checkboxID = checkbox.getAttribute('id');
+
+  		if ( Array.isArray(user[checkboxID]) && user[checkboxID].length > 0) checkbox.checked = true;
+  		else if(!Array.isArray(user[checkboxID]) && user[checkboxID]) checkbox.checked = true;
+  		else checkbox.checked = false;
+
+  		checkbox.addEventListener('change', (event) => {
+  			const key = event.target.name;
+  			const checked = event.target.checked;
+
+  			updateProfile(key, checked);
+  		});
+  	});
+
+  	return section;
+
+  }
+
   var setup = (nextStep) => {
-  	// console.log('Setup Page');
+  	// ('Setup Page');
   	if(nextStep === 'welcome') setEmptyUser();
   	const main = document.createElement('main');
+  	main.classList.add('setup');
   	const section = createSetupStep(nextStep);
 
   	main.appendChild(section);
@@ -554,13 +650,16 @@
   	const user = getStoredData('user');
 
   	const section = document.createElement('section');
-  	section.insertAdjacentHTML('beforeend', step[nextStep]);
+  	section.classList.add('setup-step');
+
+  	let el = elements(content[nextStep]) ;
+  	section.insertAdjacentHTML('beforeend', el );
 
   	const links = createLinks(nextStep);
   	section.appendChild(links);
 
   	const checkboxes = section.querySelectorAll('input[type="checkbox"]');
-  	// console.log(checkboxes);
+  	// (checkboxes);
   	checkboxes.forEach((checkbox) => {
   		let checkboxID = checkbox.getAttribute('id');
 
@@ -586,6 +685,7 @@
 
   	switch(nextStep){
   	case 'welcome' : {
+  		div.classList.add('onlybutton');
   		div.insertAdjacentHTML('beforeend','<a href=\'#setup/user\'>Volgende</a>');
   		break;
   	}
@@ -594,7 +694,11 @@
   		break;
   	}
   	case 'loan' : {
-  		div.insertAdjacentHTML('beforeend','<a href=\'#setup/user\'>Vorige</a><a href=\'#profile\'>Ga naar profiel</a><a href=\'#recommendations\'>Ga naar aanbevelingen</a>');
+  		div.insertAdjacentHTML('beforeend','<a href=\'#setup/user\'>Vorige</a><a href=\'#setup/final\'>Volgende</a>');
+  		break;
+  	}
+  	case 'final' : {
+  		div.insertAdjacentHTML('beforeend','<a href=\'#profile\'>Ga naar profiel</a><a href=\'#recommendations\'>Ga naar aanbevelingen</a>');
   		break;
   	}
   	}
@@ -603,24 +707,23 @@
   }
 
   function recommendationsPage() {
-  	removeOldPage();
+  	removeEl(document.querySelector('main'));
   	const body = document.body;
   	body.appendChild(recommendations());
   }
 
   function profilePage() {
-  	removeOldPage();
+  	removeEl(document.querySelector('main'));
   	const body = document.body;
   	body.appendChild(profile());
   }
 
-  function removeOldPage() {
-  	const main = document.querySelector('main');
-  	main.remove();
+  function removeEl(target) {
+  	target.remove();
   }
 
   function setupPage(step) {
-  	removeOldPage();
+  	removeEl(document.querySelector('main'));
   	const body = document.body;
   	body.appendChild(setup(step));
   }
@@ -633,7 +736,7 @@
   	'setup/:step': setupPage
   });
 
-  function init(){
+  function init() {
   	// temp clear of user data
   	localStorage.removeItem('user');
 

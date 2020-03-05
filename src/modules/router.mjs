@@ -3,24 +3,23 @@ import profile from 'pages/profile.mjs';
 import setup from 'pages/setup.mjs';
 
 export function recommendationsPage() {
-	removeOldPage();
+	removeEl(document.querySelector('main'));
 	const body = document.body;
 	body.appendChild(recommendations());
 }
 
 export function profilePage() {
-	removeOldPage();
+	removeEl(document.querySelector('main'));
 	const body = document.body;
 	body.appendChild(profile());
 }
 
-function removeOldPage() {
-	const main = document.querySelector('main');
-	main.remove();
+export function removeEl(target) {
+	target.remove();
 }
 
 export function setupPage(step) {
-	removeOldPage();
+	removeEl(document.querySelector('main'));
 	const body = document.body;
 	body.appendChild(setup(step));
 }

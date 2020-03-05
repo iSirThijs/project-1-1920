@@ -1,5 +1,5 @@
 import { checkLocalStorage, storeData, getStoredData } from 'modules/localStorageHelper.mjs';
-import fakeUserImport from '../user_profile.js';
+import fakeUserImport from 'data/user_profile.mjs';
 
 export function setEmptyUser() {
 const emptyUser = {

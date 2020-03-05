@@ -1,8 +1,7 @@
 import 'modules/routie.js';
-import recommendations from 'pages/recommendations.mjs';
-import profile from 'pages/profile.mjs';
-import setup from 'pages/setup.mjs';
-import { checkLocalStorage } from 'modules/localStorageHelper.mjs';
+import {
+	checkLocalStorage
+} from 'modules/localStorageHelper.mjs';
 import * as route from 'modules/router.mjs';
 
 routie({
@@ -13,7 +12,7 @@ routie({
 	'setup/:step': route.setupPage
 });
 
-function init(){
+function init() {
 	// temp clear of user data
 	localStorage.removeItem('user');
 
