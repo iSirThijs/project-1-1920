@@ -15,7 +15,7 @@ export default {
 		alias({
 			entries: {
 				modules: 'src/modules',
-				components: 'src/components',
+				data: 'src/data',
 				pages: 'src/pages',
 				templates: 'src/templates'
 			}

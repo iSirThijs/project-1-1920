@@ -1,6 +1,7 @@
-import * as step from 'templates/setupSteps.mjs';
+import setupStep from 'templates/setupSteps.mjs';
 import { updateProfile, setEmptyUser } from 'modules/user.mjs'; 
 import { getStoredData } from 'modules/localStorageHelper.mjs';
+import * as content from 'data/content.mjs';
 
 
 export default (nextStep) => {
@@ -18,7 +19,10 @@ function createSetupStep(nextStep) {
 	const user = getStoredData('user');
 
 	const section = document.createElement('section');
-	section.insertAdjacentHTML('beforeend', step[nextStep]);
+	section.classList.add('setup-step');
+
+	let el = setupStep(content[nextStep]) ;
+	section.insertAdjacentHTML('beforeend', el );
 
 	const links = createLinks(nextStep);
 	section.appendChild(links);
