@@ -25,6 +25,7 @@ body {
     box-sizing: border-box;
     margin: 0;
     background-color: var(--primary-background-color);
+    max-width: 100%;
 }
 
 :focus {
@@ -91,7 +92,6 @@ header nav ul li a:hover {
     opacity: 1;
 }
 
-
 /* Content */
 
 main {
@@ -109,6 +109,13 @@ main section {
 h2 {
     font-family: "avenirBlack", Arial, Helvetica, sans-serif;
     font-size: 50px;
+    margin: 0;
+    color: var(--primary-color);
+}
+
+h3 {
+    font-family: "avenirBlack", Arial, Helvetica, sans-serif;
+    font-size: 2em;
     margin: 0;
     color: var(--primary-color);
 }
@@ -319,4 +326,103 @@ section.hidden a {
         background: var(--primary-background-color);
         transform: rotateY(-180deg);
     }
+}
+
+/* setup */
+.setup {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.setup > section {
+    background-color: white;
+    /* width: 80%; */
+    max-width: 80%;
+    height: 80%;
+    padding: 1em;
+    border-radius: 10px;
+    display: flex;
+    flex-flow: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.setup > section > * {
+    width: 80%;
+    text-align: center;
+}
+
+.setup form {
+    width: initial;
+    display: flex;
+    flex-flow: column;
+    text-align: center;
+    align-items: flex-start;
+    margin: 0 auto;
+}
+
+input[type=checkbox],
+input[type=radio] {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+}
+
+input + label {
+    display: inline-block;
+    text-align: initial;
+    width: 10em;
+}
+
+input[type=checkbox] + label::before,
+input[type=radio] + label::before {
+    content: '';
+    display: inline-block;
+    height: 1em;
+    width: 1em;
+    background-color: red;
+    margin-right: 1em;
+}
+
+
+input[type=checkbox]:checked + label::before,
+input[type=radio]:checked + label::before {
+    background-color: blue;
+}
+
+input[type=checkbox]:checked + label,
+input[type=radio]:checked + label {
+    font-weight: bolder;
+}
+
+.setup div {
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+}
+
+.setup a:first-child {
+    background-color: var(--background-highlight-color);
+    color: black;
+}
+
+.setup a:only-child,
+.setup a {
+    display: block;
+    background-color: var(--primary-color);
+    padding: 20px;
+    border-radius: 10px;
+    color: var(--primary-background-color)
 }

@@ -449,62 +449,20 @@
   	return main;
   };
 
-  const welcome =
-  	`<h3>Welkom</h3>
-	<p>OBA jouw boek geeft aanbevelingen voor boeken op basis van data die de OBA over jou heeft. Welke data daarvoor gebruikt wordt mag jij bepalen.</p>
-	`;
+  function elements(data){
+  	const checkboxes = data.form.map((input => {
+  		return `<input type="checkbox" id=${input[0]} name=${input[0]}></input><label for=${input[0]}>${input[1]}</label>`
+  		;
+  	}));
 
-  const user = `
-	<h3>Persoonsgegevens</h3>
-	<p>Persoonsgegevens gaan over wie jij bent, zoals hoe oud je bent of waar je woont</p>
-	<form>
-		<input type="checkbox" id="age" name="age">
-		<label for="age">Leeftijd</label>
-		<input type="checkbox" id="city" name="city">
-		<label for="city">Woonplaats</label>
-		<input type="checkbox" id="postalCode" name="postalCode">
-		<label for="postalcode">Postcode</label>
-		<input type="checkbox" id="gender" name="gender">
-		<label for="gender">geslacht</label>
-	</form>`;
+  	console.log(checkboxes);
+  	const heading = 
+  		`<h3>${data.title}</h3>
+		<p>${data.description}</p>
+		<form>${checkboxes.join('\n')}</form>`;
 
-  const loan = `
-	<h3>Leengeschiedenis</h3>
-	<p>Leengeschiedenis gaat over wat je bij de OBA hebt geleend, zoals het soort boek of welke auteurs je leest</p>
-	<form>
-		<input type="checkbox" id="genres" name="genres">
-		<label for="genres">Genres</label>
-		<input type="checkbox" id="obaLocation" name="obaLocation">
-		<label for="obaLocation">OBA locaties</label>
-		<input type="checkbox" id="mediaType" name="mediaType">
-		<label for="mediaType">Media type</label>
-		<input type="checkbox" id="loanCategory" name="loanCategory">
-		<label for="loanCategory">Categorie</label>
-	</form>
-	`;
-
-  // export default function(data){
-  // 	const title = `<h3>${data.title}</h3>`
-  // 	const description = `<p>${data.description}</p>'
-  // 	<form>
-  // 		<input type="checkbox" id="${id}" name="${id}">
-  // 		<label for="genres">Genres</label>
-  // 		<input type="checkbox" id="obaLocation" name="obaLocation">
-  // 		<label for="obaLocation">OBA locaties</label>
-  // 		<input type="checkbox" id="mediaType" name="mediaType">
-  // 		<label for="mediaType">Media type</label>
-  // 		<input type="checkbox" id="loanCategory" name="loanCategory">
-  // 		<label for="loanCategory">Categorie</label>
-  // 	</form>
-  // 	`;
-  // }
-
-  var step = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    welcome: welcome,
-    user: user,
-    loan: loan
-  });
+  	return heading;
+  }
 
   var fakeUserImport = fakeUser => {
   	return {
@@ -559,10 +517,39 @@
 
   }
 
+  const welcome =
+  	{
+  		title: 'Welkom bij OBA Jouw Boek',
+  		description: 'OBA jouw boek geeft aanbevelingen voor boeken op basis van data die de OBA over jou heeft. Welke data daarvoor gebruikt wordt mag jij bepalen.',
+  		form: []
+  	};
+
+  const user = 
+  	{
+  		title: 'Persoonsgegevens',
+  		description: 'Persoonsgegevens gaan over wie jij bent, zoals hoe oud je bent of waar je woont',
+  		form: [['age', 'leeftijd'], ['city', 'woonplaats'], ['postalCode', 'postcode'], ['gender', 'geslacht']]
+  	};
+
+  const loan = 
+  	{
+  		title: 'Persoonsgegevens',
+  		description: 'Persoonsgegevens gaan over wie jij bent, zoals hoe oud je bent of waar je woont',
+  		form: [['genres', 'Genres'], ['obaLocation', 'OBA locatie'], ['mediaType', 'Media Type'], ['loanCategory', 'Leen Categorie']]
+  	};
+
+  var content = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    welcome: welcome,
+    user: user,
+    loan: loan
+  });
+
   var setup = (nextStep) => {
   	// console.log('Setup Page');
   	if(nextStep === 'welcome') setEmptyUser();
   	const main = document.createElement('main');
+  	main.classList.add('setup');
   	const section = createSetupStep(nextStep);
 
   	main.appendChild(section);
@@ -574,7 +561,10 @@
   	const user = getStoredData('user');
 
   	const section = document.createElement('section');
-  	section.insertAdjacentHTML('beforeend', step[nextStep]);
+  	section.classList.add('setup-step');
+
+  	let el = elements(content[nextStep]) ;
+  	section.insertAdjacentHTML('beforeend', el );
 
   	const links = createLinks(nextStep);
   	section.appendChild(links);
