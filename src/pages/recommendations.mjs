@@ -30,20 +30,39 @@ export default () => {
 	});
 
 	Promise.all(fetches)
-		.then(fetchResults => {
-			fetchResults.forEach((data, i) => {
-				const section = document.createElement('section')
-				main.appendChild(section)
-
-				const seperator = template.buildSeperator(genrePriorities[i], section)
-				seperator.addEventListener('click', () => interaction.toggleContent(seperator))
-
-				const cleanData = cleaner(data.results)
-				template.buildCard(cleanData, section)
-			});
-		})
+		.then(data => buildContent(data, main, genrePriorities))
 		.then(() => removeEl(loadingState))
+		.then(() => buildInteractionMenu(main))
 		.catch(err => error(err))
 
 	return main;
 };
+
+
+function buildContent(data, main, genrePriorities) {
+	data.forEach((data, i) => {
+		const section = document.createElement('section')
+		main.appendChild(section)
+
+		const seperator = template.buildSeperator(genrePriorities[i], section)
+		seperator.addEventListener('click', () => interaction.toggleContent(seperator))
+
+		const cleanData = cleaner(data.results)
+		template.buildCard(cleanData, section)
+	});
+}
+
+
+function buildInteractionMenu(main) {
+	const aside = document.createElement('aside')
+	main.prepend(aside)
+
+	template.buildSortMenu(aside)
+	aside.querySelectorAll('.sortMenu input').forEach(label => label.addEventListener('change', e => interaction.sortContent(e)))
+
+	template.buildFilterMenu(aside)
+	const sections = document.querySelectorAll('section')
+	sections.forEach(section => template.buildFilterOption(section, aside.querySelector('.filterMenu form')))
+
+	aside.querySelectorAll('.filterMenu input').forEach(label => label.addEventListener('change', e => interaction.filterContent(e)))
+}

@@ -350,7 +350,7 @@
 	<div class="error">
 		<h4>Oops, er is iets misgegaan</h4>
 		<p>We konden uw aanbevelingen niet voor u ophalen uit de OBA database!</p>
-		<p>Klik op dit bericht om opnieuw te proberen. Als dat niet werkt kunt u het later nog een keer proberen.</p>
+		<p>Refresh de pagina om opnieuw te proberen. Als dat niet werkt kunt u het later nog een keer proberen.</p>
 		<i>${err}</i>
 	</div>
 	`;
@@ -364,6 +364,37 @@
 		<h2>${subject}</h2>
 		<p>${user.genres.length === 0 ? 'Random categorie opgehaald' : 'Gebaseerd op uw leengeschiedenis'}</p>
 	</div>
+	`;
+  };
+
+  var sortMenu = () => {
+  	return `
+	<div class="sortMenu">
+		<h6>Sorteer</h6>
+		<form>
+			<input type="radio" name="sort" id="new" value="new" checked>
+			<label for="new">Nieuw eerst</label>
+			<input type="radio" name="sort" id="old" value="old" >
+			<label for="old">Oud eerst</label>
+		</form>
+	</div>
+	`;
+  };
+
+  var filterMenu = () => {
+  	return `
+	<div class="filterMenu">
+		<h6>Filter</h6>
+		<form></form>
+	</div>
+	`;
+  };
+
+  var filterOption = (section) => {
+  	const genre = section.querySelector('.seperator h2').textContent;
+  	return `
+	<input type="checkbox" id="filterOption${genre}" value="${genre}" checked>
+	<label for="filterOption${genre}">${genre}</label>
 	`;
   };
 
@@ -385,19 +416,43 @@
       return document.querySelector('main > section:last-of-type > div:first-of-type')
   }
 
+  function buildSortMenu(target) {
+      target.insertAdjacentHTML('afterbegin', sortMenu());
+      return document.querySelector('aside > div.sortMenu')
+  }
+
+  function buildFilterMenu(target) {
+      target.insertAdjacentHTML('beforeend', filterMenu());
+  }
+
+  function buildFilterOption(section, target) {
+      target.insertAdjacentHTML('beforeend', filterOption(section));
+  }
+
   function handleFetchError(err) {
   	console.error('Error while fetching ', err);
 
-  	const main = document.querySelector('main');
-  	const errorBox = buildErrorMsg(err, main);
+  	const loadingState = document.querySelector('main > div.loading');
+  	removeEl(loadingState);
 
-  	//Add reload function
-  	errorBox.addEventListener('click', () => location.reload());
+  	const main = document.querySelector('main');
+  	buildErrorMsg(err, main);
   }
 
   function toggleContent(el) {
   	const container = el.parentElement;
   	container.classList.toggle('hidden');
+  }
+
+  function sortContent(e) {
+  	console.log('sort the content', e.target.value);
+  }
+
+  function filterContent(e) {
+  	const filter = e.target.value;
+
+  	console.log('filter the content', filter);
+
   }
 
   var recommendations = () => {
@@ -418,23 +473,42 @@
   	});
 
   	Promise.all(fetches)
-  		.then(fetchResults => {
-  			fetchResults.forEach((data, i) => {
-  				const section = document.createElement('section');
-  				main.appendChild(section);
-
-  				const seperator = buildSeperator(genrePriorities[i], section);
-  				seperator.addEventListener('click', () => toggleContent(seperator));
-
-  				const cleanData$1 = cleanData(data.results);
-  				buildCard(cleanData$1, section);
-  			});
-  		})
+  		.then(data => buildContent(data, main, genrePriorities))
   		.then(() => removeEl(loadingState))
+  		.then(() => buildInteractionMenu(main))
   		.catch(err => handleFetchError(err));
 
   	return main;
   };
+
+
+  function buildContent(data, main, genrePriorities) {
+  	data.forEach((data, i) => {
+  		const section = document.createElement('section');
+  		main.appendChild(section);
+
+  		const seperator = buildSeperator(genrePriorities[i], section);
+  		seperator.addEventListener('click', () => toggleContent(seperator));
+
+  		const cleanData$1 = cleanData(data.results);
+  		buildCard(cleanData$1, section);
+  	});
+  }
+
+
+  function buildInteractionMenu(main) {
+  	const aside = document.createElement('aside');
+  	main.prepend(aside);
+
+  	buildSortMenu(aside);
+  	aside.querySelectorAll('.sortMenu input').forEach(label => label.addEventListener('change', e => sortContent(e)));
+
+  	buildFilterMenu(aside);
+  	const sections = document.querySelectorAll('section');
+  	sections.forEach(section => buildFilterOption(section, aside.querySelector('.filterMenu form')));
+
+  	aside.querySelectorAll('.filterMenu input').forEach(label => label.addEventListener('change', e => filterContent(e)));
+  }
 
   var profile = () => {
   	const main = document.createElement('main');

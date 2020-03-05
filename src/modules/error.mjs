@@ -1,11 +1,14 @@
 import * as template from 'modules/template.mjs'
+import {
+	removeEl
+} from 'modules/router.mjs'
 
 export default function handleFetchError(err) {
 	console.error('Error while fetching ', err)
 
-	const main = document.querySelector('main')
-	const errorBox = template.buildErrorMsg(err, main)
+	const loadingState = document.querySelector('main > div.loading')
+	removeEl(loadingState)
 
-	//Add reload function
-	errorBox.addEventListener('click', () => location.reload())
+	const main = document.querySelector('main')
+	template.buildErrorMsg(err, main)
 }
