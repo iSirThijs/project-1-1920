@@ -8,6 +8,10 @@
     src: url(../assets/fonts/AvenirLTStd-Roman.woff);
 }
 
+::selection {
+    background-color: none;
+}
+
 :root {
     --primary-color: red;
     --primary-background-color: #F9F9F9;
@@ -185,13 +189,8 @@ a {
     width: 100vw;
     text-align: center;
     padding: 15px 0;
-    margin: 10px 0 10px 0;
+    margin: 50px 0 50px 0;
     cursor: pointer;
-}
-
-
-section:not(:first-of-type) .seperator {
-    margin-top: 100px;
 }
 
 
@@ -206,12 +205,17 @@ section.hidden .seperator {
     padding-bottom: 5px;
 }
 
+
+
+/* Hide */
+
 section.hidden .seperator p,
-section.hidden a {
+section.hidden a,
+section.filtered,
+.filterMenu.hidden {
     position: absolute;
     left: -9999px;
 }
-
 
 
 /* Error */
@@ -434,4 +438,37 @@ input[type=radio]:checked+label {
     padding: 20px;
     border-radius: 10px;
     color: var(--primary-background-color)
+}
+
+
+
+/* User actions */
+
+aside {
+    display: flex;
+    justify-content: center;
+    margin-top: 50px;
+}
+
+.sortMenu,
+.filterMenu {
+    width: 50%;
+    display: block;
+    display: flex;
+    justify-content: center;
+}
+
+aside h6 {
+    display: inline-block;
+    font-size: 25px;
+    margin: -5px 0 0 0;
+}
+
+aside form {
+    display: inline-block;
+}
+
+aside form label {
+    width: fit-content;
+    margin-left: 35px;
 }

@@ -10,6 +10,6 @@ export function sortContent(e) {
 export function filterContent(e) {
 	const filter = e.target.value
 
-	console.log('filter the content', filter)
-
+	const targetedSection = document.querySelector(`[filterGenre="${filter}"]`)
+	targetedSection.parentElement.classList.toggle('filtered')
 }
