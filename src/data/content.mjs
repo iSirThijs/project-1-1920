@@ -18,3 +18,12 @@ export const loan =
 		description: 'Persoonsgegevens gaan over wie jij bent, zoals hoe oud je bent of waar je woont',
 		form: [['genres', 'Genres'], ['obaLocation', 'OBA locatie'], ['mediaType', 'Media Type'], ['loanCategory', 'Leen Categorie']]
 	};
+
+export const final = 
+	{
+		title: 'Bedankt',
+		description: 'Je profiel is klaar en kan nu gebruikt worden om jou aanbevelingen te doen',
+		form: []
+	};
+
+	

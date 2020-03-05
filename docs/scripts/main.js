@@ -438,7 +438,6 @@
 
   var profile = () => {
   	const main = document.createElement('main');
-  	console.log('Profile Page');
 
 
 
@@ -454,8 +453,6 @@
   		return `<input type="checkbox" id=${input[0]} name=${input[0]}></input><label for=${input[0]}>${input[1]}</label>`
   		;
   	}));
-
-  	console.log(checkboxes);
   	const heading = 
   		`<h3>${data.title}</h3>
 		<p>${data.description}</p>
@@ -538,15 +535,23 @@
   		form: [['genres', 'Genres'], ['obaLocation', 'OBA locatie'], ['mediaType', 'Media Type'], ['loanCategory', 'Leen Categorie']]
   	};
 
+  const final = 
+  	{
+  		title: 'Bedankt',
+  		description: 'Je profiel is klaar en kan nu gebruikt worden om jou aanbevelingen te doen',
+  		form: []
+  	};
+
   var content = /*#__PURE__*/Object.freeze({
     __proto__: null,
     welcome: welcome,
     user: user,
-    loan: loan
+    loan: loan,
+    final: final
   });
 
   var setup = (nextStep) => {
-  	// console.log('Setup Page');
+  	// ('Setup Page');
   	if(nextStep === 'welcome') setEmptyUser();
   	const main = document.createElement('main');
   	main.classList.add('setup');
@@ -570,7 +575,7 @@
   	section.appendChild(links);
 
   	const checkboxes = section.querySelectorAll('input[type="checkbox"]');
-  	// console.log(checkboxes);
+  	// (checkboxes);
   	checkboxes.forEach((checkbox) => {
   		let checkboxID = checkbox.getAttribute('id');
 
@@ -604,7 +609,11 @@
   		break;
   	}
   	case 'loan' : {
-  		div.insertAdjacentHTML('beforeend','<a href=\'#setup/user\'>Vorige</a><a href=\'#profile\'>Ga naar profiel</a><a href=\'#recommendations\'>Ga naar aanbevelingen</a>');
+  		div.insertAdjacentHTML('beforeend','<a href=\'#setup/loan\'>Vorige</a><a href=\'#setup/final\'>Volgende</a>');
+  		break;
+  	}
+  	case 'final' : {
+  		div.insertAdjacentHTML('beforeend','<a href=\'#profile\'>Ga naar profiel</a><a href=\'#recommendations\'>Ga naar aanbevelingen</a>');
   		break;
   	}
   	}
