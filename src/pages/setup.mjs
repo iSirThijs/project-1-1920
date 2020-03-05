@@ -55,6 +55,7 @@ function createLinks(nextStep){
 
 	switch(nextStep){
 	case 'welcome' : {
+		div.classList.add('onlybutton');
 		div.insertAdjacentHTML('beforeend','<a href=\'#setup/user\'>Volgende</a>');
 		break;
 	}
@@ -63,7 +64,7 @@ function createLinks(nextStep){
 		break;
 	}
 	case 'loan' : {
-		div.insertAdjacentHTML('beforeend','<a href=\'#setup/loan\'>Vorige</a><a href=\'#setup/final\'>Volgende</a>');
+		div.insertAdjacentHTML('beforeend','<a href=\'#setup/user\'>Vorige</a><a href=\'#setup/final\'>Volgende</a>');
 		break;
 	}
 	case 'final' : {

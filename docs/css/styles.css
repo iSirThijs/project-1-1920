@@ -14,6 +14,8 @@
     --secondary-background-color: white;
     --background-highlight-color: #E6E6E6;
     --text-color: black;
+    --book-open: url('../assets/icons/book_open.svg');
+    --book-closed: url('../assets/icons/book_closed.svg')
 }
 
 * {
@@ -393,14 +395,17 @@ input[type=radio] + label::before {
     display: inline-block;
     height: 1em;
     width: 1em;
-    background-color: red;
+    background-image: var(--book-closed);
+    background-repeat: no-repeat;
+    background-size: contain;
     margin-right: 1em;
 }
 
 
 input[type=checkbox]:checked + label::before,
 input[type=radio]:checked + label::before {
-    background-color: blue;
+    background-image: var(--book-open);
+    /* background-color: blue; */
 }
 
 input[type=checkbox]:checked + label,
@@ -412,6 +417,10 @@ input[type=radio]:checked + label {
     display: flex;
     flex-flow: row;
     justify-content: space-between;
+}
+
+.setup div.onlybutton {
+    justify-content: flex-end;
 }
 
 .setup a:first-child {
