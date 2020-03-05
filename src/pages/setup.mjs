@@ -8,6 +8,7 @@ export default (nextStep) => {
 	// console.log('Setup Page');
 	if(nextStep === 'welcome') setEmptyUser();
 	const main = document.createElement('main');
+	main.classList.add('setup');
 	const section = createSetupStep(nextStep);
 
 	main.appendChild(section);

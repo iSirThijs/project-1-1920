@@ -431,14 +431,15 @@
 
   function elements(data){
   	const checkboxes = data.form.map((input => {
-  		return `<label for=${input[0]}>${input[1]}<label>
-		<input type="checkbox" id=${input[0]} name=${input[0]}>`;
+  		return `<input type="checkbox" id=${input[0]} name=${input[0]}></input><label for=${input[0]}>${input[1]}</label>`
+  		;
   	}));
 
+  	console.log(checkboxes);
   	const heading = 
   		`<h3>${data.title}</h3>
 		<p>${data.description}</p>
-		<form>${checkboxes.join('')}</form>`;
+		<form>${checkboxes.join('\n')}</form>`;
 
   	return heading;
   }
@@ -528,6 +529,7 @@
   	// console.log('Setup Page');
   	if(nextStep === 'welcome') setEmptyUser();
   	const main = document.createElement('main');
+  	main.classList.add('setup');
   	const section = createSetupStep(nextStep);
 
   	main.appendChild(section);
