@@ -57,9 +57,6 @@ function buildInteractionMenu(main) {
 	const aside = document.createElement('aside')
 	main.prepend(aside)
 
-	template.buildSortMenu(aside)
-	aside.querySelectorAll('.sortMenu input').forEach(label => label.addEventListener('change', e => interaction.sortContent(e)))
-
 	template.buildFilterMenu(aside)
 	const sections = document.querySelectorAll('section')
 	sections.forEach(section => template.buildFilterOption(section, aside.querySelector('.filterMenu form')))

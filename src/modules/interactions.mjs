@@ -3,10 +3,6 @@ export function toggleContent(el) {
 	container.classList.toggle('hidden')
 }
 
-export function sortContent(e) {
-	console.log('sort the content', e.target.value)
-}
-
 export function filterContent(e) {
 	const filter = e.target.value
 

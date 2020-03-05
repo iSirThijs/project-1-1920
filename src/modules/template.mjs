@@ -24,11 +24,6 @@ export function buildSeperator(subject, target) {
     return document.querySelector('main > section:last-of-type > div:first-of-type')
 }
 
-export function buildSortMenu(target) {
-    target.insertAdjacentHTML('afterbegin', sortMenu())
-    return document.querySelector('aside > div.sortMenu')
-}
-
 export function buildFilterMenu(target) {
     target.insertAdjacentHTML('beforeend', filterMenu())
 }

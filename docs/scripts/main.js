@@ -367,20 +367,6 @@
 	`;
   };
 
-  var sortMenu = () => {
-  	return `
-	<div class="sortMenu">
-		<h6>Sorteer</h6>
-		<form>
-			<input type="radio" name="sort" id="new" value="new" checked>
-			<label for="new">Nieuw eerst</label>
-			<input type="radio" name="sort" id="old" value="old" >
-			<label for="old">Oud eerst</label>
-		</form>
-	</div>
-	`;
-  };
-
   var filterMenu = () => {
   	return `
 	<div class="filterMenu">
@@ -416,11 +402,6 @@
       return document.querySelector('main > section:last-of-type > div:first-of-type')
   }
 
-  function buildSortMenu(target) {
-      target.insertAdjacentHTML('afterbegin', sortMenu());
-      return document.querySelector('aside > div.sortMenu')
-  }
-
   function buildFilterMenu(target) {
       target.insertAdjacentHTML('beforeend', filterMenu());
   }
@@ -442,10 +423,6 @@
   function toggleContent(el) {
   	const container = el.parentElement;
   	container.classList.toggle('hidden');
-  }
-
-  function sortContent(e) {
-  	console.log('sort the content', e.target.value);
   }
 
   function filterContent(e) {
@@ -499,9 +476,6 @@
   function buildInteractionMenu(main) {
   	const aside = document.createElement('aside');
   	main.prepend(aside);
-
-  	buildSortMenu(aside);
-  	aside.querySelectorAll('.sortMenu input').forEach(label => label.addEventListener('change', e => sortContent(e)));
 
   	buildFilterMenu(aside);
   	const sections = document.querySelectorAll('section');
