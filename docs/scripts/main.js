@@ -367,6 +367,34 @@
 	`;
   };
 
+  var sortMenu = () => {
+  	return `
+	<div class="sortMenu">
+		<h6>Sorteer</h6>
+		<form>
+			<input type="radio" name="sort" id="new" value="new" checked>
+			<label for="new">Nieuw eerst</label>
+			<input type="radio" name="sort" id="old" value="old" >
+			<label for="old">Oud eerst</label>
+		</form>
+	</div>
+	`;
+  };
+
+  var filterMenu = () => {
+  	return `
+	<div class="filterMenu">
+		<h6>Filter</h6>
+		<form>
+			<input type="radio" name="sort" id="bbb" value="bbb" checked>
+			<label for="bbb">Nieuw eerst</label>
+			<input type="radio" name="sort" id="aaa" value="aaa" >
+			<label for="aaa">Oud eerst</label>
+		</form>
+	</div>
+	`;
+  };
+
   function buildCard(data, target) {
       data.forEach(item => target.insertAdjacentHTML('beforeend', card(item)));
   }
@@ -385,6 +413,16 @@
       return document.querySelector('main > section:last-of-type > div:first-of-type')
   }
 
+  function buildSortMenu(target) {
+      target.insertAdjacentHTML('afterbegin', sortMenu());
+      return document.querySelector('aside > div.sortMenu')
+  }
+
+  function buildFilterMenu(target) {
+      target.insertAdjacentHTML('beforeend', filterMenu());
+      return document.querySelector('aside > div.filterMenu')
+  }
+
   function handleFetchError(err) {
   	console.error('Error while fetching ', err);
 
@@ -398,6 +436,14 @@
   function toggleContent(el) {
   	const container = el.parentElement;
   	container.classList.toggle('hidden');
+  }
+
+  function sortContent() {
+  	console.log('sort the content');
+  }
+
+  function filterContent() {
+  	console.log('filter the content');
   }
 
   var recommendations = () => {
@@ -418,23 +464,39 @@
   	});
 
   	Promise.all(fetches)
-  		.then(fetchResults => {
-  			fetchResults.forEach((data, i) => {
-  				const section = document.createElement('section');
-  				main.appendChild(section);
-
-  				const seperator = buildSeperator(genrePriorities[i], section);
-  				seperator.addEventListener('click', () => toggleContent(seperator));
-
-  				const cleanData$1 = cleanData(data.results);
-  				buildCard(cleanData$1, section);
-  			});
-  		})
+  		.then(data => buildContent(data, main, genrePriorities))
   		.then(() => removeEl(loadingState))
+  		.then(() => buildInteractionMenu(main))
   		.catch(err => handleFetchError(err));
 
   	return main;
   };
+
+
+  function buildContent(data, main, genrePriorities) {
+  	data.forEach((data, i) => {
+  		const section = document.createElement('section');
+  		main.appendChild(section);
+
+  		const seperator = buildSeperator(genrePriorities[i], section);
+  		seperator.addEventListener('click', () => toggleContent(seperator));
+
+  		const cleanData$1 = cleanData(data.results);
+  		buildCard(cleanData$1, section);
+  	});
+  }
+
+
+  function buildInteractionMenu(main) {
+  	const aside = document.createElement('aside');
+  	main.prepend(aside);
+
+  	buildSortMenu(aside);
+  	aside.querySelectorAll('.sortMenu input').forEach(label => label.addEventListener('change', () => sortContent()));
+
+  	buildFilterMenu(aside);
+  	aside.querySelectorAll('.filterMenu input').forEach(label => label.addEventListener('change', () => filterContent()));
+  }
 
   var profile = () => {
   	const main = document.createElement('main');
