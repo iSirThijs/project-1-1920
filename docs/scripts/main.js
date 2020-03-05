@@ -510,18 +510,6 @@
   	aside.querySelectorAll('.filterMenu input').forEach(label => label.addEventListener('change', e => filterContent(e)));
   }
 
-  var profile = () => {
-  	const main = document.createElement('main');
-
-
-
-
-
-
-
-  	return main;
-  };
-
   function elements(data){
   	const checkboxes = data.form.map((input => {
   		return `<input type="checkbox" id=${input[0]} name=${input[0]}></input><label for=${input[0]}>${input[1]}</label>`
@@ -623,6 +611,47 @@
     loan: loan,
     final: final
   });
+
+  var profile = () => {
+  	const user = getStoredData('user');
+  	const main = document.createElement('main');
+  	main.appendChild(createUserSection('user', user));
+  	main.appendChild(createUserSection('loan', user));
+
+
+
+  	return main;
+  };
+
+
+  function createUserSection(category, user) {
+
+  	const section = document.createElement('section');
+  	section.classList.add('setup-step');
+
+  	let el = elements(content[category]) ;
+  	section.insertAdjacentHTML('beforeend', el );
+
+  	const checkboxes = section.querySelectorAll('input[type="checkbox"]');
+  	// (checkboxes);
+  	checkboxes.forEach((checkbox) => {
+  		let checkboxID = checkbox.getAttribute('id');
+
+  		if ( Array.isArray(user[checkboxID]) && user[checkboxID].length > 0) checkbox.checked = true;
+  		else if(!Array.isArray(user[checkboxID]) && user[checkboxID]) checkbox.checked = true;
+  		else checkbox.checked = false;
+
+  		checkbox.addEventListener('change', (event) => {
+  			const key = event.target.name;
+  			const checked = event.target.checked;
+
+  			updateProfile(key, checked);
+  		});
+  	});
+
+  	return section;
+
+  }
 
   var setup = (nextStep) => {
   	// ('Setup Page');
