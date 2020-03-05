@@ -14,6 +14,7 @@ import {
 
 export default () => {
 	const main = document.createElement('main');
+	main.classList.add('recommendations');
 
 	const user = getStoredData('user')
 	const genrePriorities = priorities.genre(user)

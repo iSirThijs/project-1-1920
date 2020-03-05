@@ -6,6 +6,7 @@ import * as content from 'data/content.mjs';
 export default () => {
 	const user = getStoredData('user');
 	const main = document.createElement('main');
+	main.classList.add('profile');
 	main.appendChild(createUserSection('user', user));
 	main.appendChild(createUserSection('loan', user));
 

@@ -457,6 +457,7 @@
 
   var recommendations = () => {
   	const main = document.createElement('main');
+  	main.classList.add('recommendations');
 
   	const user = getStoredData('user');
   	const genrePriorities = genre(user);
@@ -615,6 +616,7 @@
   var profile = () => {
   	const user = getStoredData('user');
   	const main = document.createElement('main');
+  	main.classList.add('profile');
   	main.appendChild(createUserSection('user', user));
   	main.appendChild(createUserSection('loan', user));
 
