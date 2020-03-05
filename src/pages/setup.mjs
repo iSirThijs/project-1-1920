@@ -5,7 +5,7 @@ import * as content from 'data/content.mjs';
 
 
 export default (nextStep) => {
-	// console.log('Setup Page');
+	// ('Setup Page');
 	if(nextStep === 'welcome') setEmptyUser();
 	const main = document.createElement('main');
 	main.classList.add('setup');
@@ -29,7 +29,7 @@ function createSetupStep(nextStep) {
 	section.appendChild(links);
 
 	const checkboxes = section.querySelectorAll('input[type="checkbox"]');
-	// console.log(checkboxes);
+	// (checkboxes);
 	checkboxes.forEach((checkbox) => {
 		let checkboxID = checkbox.getAttribute('id');
 
@@ -55,6 +55,7 @@ function createLinks(nextStep){
 
 	switch(nextStep){
 	case 'welcome' : {
+		div.classList.add('onlybutton');
 		div.insertAdjacentHTML('beforeend','<a href=\'#setup/user\'>Volgende</a>');
 		break;
 	}
@@ -63,7 +64,11 @@ function createLinks(nextStep){
 		break;
 	}
 	case 'loan' : {
-		div.insertAdjacentHTML('beforeend','<a href=\'#setup/user\'>Vorige</a><a href=\'#profile\'>Ga naar profiel</a><a href=\'#recommendations\'>Ga naar aanbevelingen</a>');
+		div.insertAdjacentHTML('beforeend','<a href=\'#setup/user\'>Vorige</a><a href=\'#setup/final\'>Volgende</a>');
+		break;
+	}
+	case 'final' : {
+		div.insertAdjacentHTML('beforeend','<a href=\'#profile\'>Ga naar profiel</a><a href=\'#recommendations\'>Ga naar aanbevelingen</a>');
 		break;
 	}
 	}

@@ -4,7 +4,7 @@ export default function elements(data){
 		;
 	}));
 
-	console.log(checkboxes);
+	(checkboxes);
 	const heading = 
 		`<h3>${data.title}</h3>
 		<p>${data.description}</p>
