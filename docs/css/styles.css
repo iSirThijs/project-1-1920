@@ -18,8 +18,8 @@
     --secondary-background-color: white;
     --background-highlight-color: #E6E6E6;
     --text-color: black;
-    --book-open: url('assets/icons/book_open.svg');
-    --book-closed: url('assets/icons/book_closed.svg');
+    --book-open: url('../assets/icons/book_open.svg');
+    --book-closed: url('../assets/icons/book_closed.svg');
     --font-base-size: 16px;
     --font-h1-size: 2em;
     --font-h2-size: 1.8em;
