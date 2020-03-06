@@ -340,16 +340,7 @@ input[type=radio]:checked+label {
     padding: 15px 0; 
     margin: 50px 0;
     cursor: pointer;
-    margin: 50px 0;
 }
-
-<<<<<<< ours
-.recommendations section.hidden+section .seperator {
-    margin: 50px 0 50px 0;
-    cursor: pointer;
-}
-=======
->>>>>>> theirs
 
 /* Toggle cards content */
 
@@ -485,7 +476,7 @@ section.hidden+section .seperator {
 aside {
     display: flex;
     justify-content: center;
-    margin-top: 50px;
+    /* margin-top: 50px; */
 }
 
 .sortMenu,
@@ -494,6 +485,7 @@ aside {
     display: block;
     display: flex;
     justify-content: center;
+    margin-top: 50px;
 }
 
 aside h6 {
