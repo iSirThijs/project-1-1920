@@ -572,15 +572,15 @@
 
   const loan = 
   	{
-  		title: 'Persoonsgegevens',
-  		description: 'Persoonsgegevens gaan over wie jij bent, zoals hoe oud je bent of waar je woont',
+  		title: 'Leengeschiedenis',
+  		description: 'Leengeschiedenis gaat over wat jij doet bij de OBA. Bijvoorbeeld de boeken die jij leent, welke genres jij het meeste leest of welke OBA locaties jij bezoekt',
   		form: [['genres', 'Genres'], ['obaLocation', 'OBA locatie'], ['mediaType', 'Media Type'], ['loanCategory', 'Leen Categorie']]
   	};
 
   const final = 
   	{
   		title: 'Bedankt',
-  		description: 'Je profiel is klaar en kan nu gebruikt worden om jou aanbevelingen te doen',
+  		description: 'Je profiel is klaar en kan nu gebruikt worden om jou aanbevelingen te doen. Op jouw profiel pagina kan je altijd de toestemmingen aan of uitzetten. ',
   		form: []
   	};
 
