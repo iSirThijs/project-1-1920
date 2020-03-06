@@ -1,11 +1,11 @@
 @font-face {
     font-family: avenirBlack;
-    src: url(../assets/fonts/AvenirLTStd-Black.woff);
+    src: url('../assets/fonts/AvenirLTStd-Black.woff');
 }
 
 @font-face {
     font-family: avenirRoman;
-    src: url(../assets/fonts/AvenirLTStd-Roman.woff);
+    src: url('../assets/fonts/AvenirLTStd-Roman.woff');
 }
 
 :root {
