@@ -337,15 +337,19 @@ input[type=radio]:checked+label {
     border-bottom: 6px solid var(--primary-color);
     width: 100%;
     text-align: center;
-    padding: 15px 0;
+    padding: 15px 0; 
+    margin: 50px 0;
     cursor: pointer;
     margin: 50px 0;
 }
 
+<<<<<<< ours
 .recommendations section.hidden+section .seperator {
     margin: 50px 0 50px 0;
     cursor: pointer;
 }
+=======
+>>>>>>> theirs
 
 /* Toggle cards content */
 
