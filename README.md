@@ -2,13 +2,11 @@ A 1-week project by [Thijs Spijker](https://github.com/isirthijs/) & [Wessel Smi
 
 # Table of Contents
 * [Demo](https://isirthijs.github.io/project-1-1920)
-* [Assignment](#assignment)
 * [Goal](#goal)
 * [Install-Notes](#install-notes)
 * [Features](#features)
 * [API](#api)
 * [Data](#data)
-* [Design-Patterns-and-Best-Practices](#design-patterns-and-best-practices)
 * [Credits](#credits)
 * [License](#license)
 
@@ -109,10 +107,10 @@ The fetched data from the `API` is cleaned before using it;
 
 # Stuff We Want To Do
 
-- [] Use more variables to customize/improve the recommendations [currently only genre works] (if users allows this)
-- [] Allow user to give weight to certain variables in profile settings to manipulate the recommendations
-- [] Give users the option to delete their data from the OBA database
-- [] Allow user to sort recommendations
+- [ ] Use more variables to customize/improve the recommendations [currently only genre works] (if users allows this)
+- [ ] Allow user to give weight to certain variables in profile settings to manipulate the recommendations
+- [ ] Give users the option to delete their data from the OBA database
+- [ ] Allow user to sort recommendations
 
 # Credits
 
